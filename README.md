@@ -16,7 +16,7 @@ Encrypto is a web application designed to provide users with an interactive plat
 
 1. **Clone the Repository**:
     ```bash
-    git clone https://github.com/yourusername/Encrypto.git
+    git clone https://github.com/yassincodes404/Encrypto
     cd Encrypto
     ```
 
