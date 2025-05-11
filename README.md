@@ -114,6 +114,3 @@ We welcome contributions! Please fork the repository, create a new branch, and s
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## Contact
-
-For questions or feedback, please contact us at `support@encryptoapp.com`.
