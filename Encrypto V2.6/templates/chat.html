@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+
+{% block title %}Secure Chat - Secure Encryption Portal{% endblock %}
+{% block page_title %}Secure Chat{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="card chat-card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4><i class="ph-fill ph-chat-circle-text"></i> <span data-en="Global Secure Chat" data-ar="الدردشة العالمية الآمنة">Global Secure Chat</span></h4>
+                <div class="chat-controls">
+                    <button class="btn btn-sm btn-outline-info" id="refresh-btn">
+                        <i class="ph-fill ph-arrows-clockwise"></i> <span data-en="Refresh" data-ar="تحديث">Refresh</span>
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="chatOptionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="ph-fill ph-gear-six"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="chatOptionsDropdown">
+                            <li><a class="dropdown-item" href="#" id="clear-chat"><i class="ph-fill ph-eraser"></i> <span data-en="Clear Chat View" data-ar="مسح عرض الدردشة">Clear Chat View</span></a></li>
+                            <li><a class="dropdown-item" href="#" id="verify-all"><i class="ph-fill ph-shield-check"></i> <span data-en="Verify All Signatures" data-ar="التحقق من جميع التوقيعات">Verify All Signatures</span></a></li>
+                            <li><a class="dropdown-item" href="#" id="export-chat"><i class="ph-fill ph-download"></i> <span data-en="Export Chat Log" data-ar="تصدير سجل الدردشة">Export Chat Log</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be loaded here -->
+                {% for message in messages %}
+                <div class="message-container {% if message.user_id == current_user.id %}outgoing{% else %}incoming{% endif %}">
+                    <div class="message-bubble">
+                        <div class="message-header">
+                            <span class="message-sender">{{ message.author.username }}</span>
+                            <small class="message-time">{{ message.timestamp.strftime('%H:%M') }}</small>
+                        </div>
+                        <div class="message-content">
+                            {{ message.content }}
+                        </div>
+                        <div class="message-footer">
+                            <small class="message-status">
+                                <i class="ph-fill ph-shield-check signature-icon"></i> 
+                                <span class="signature-status" data-signature="{{ message.signature }}" data-user="{{ message.author.id }}">Verified</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="chat-input-container">
+                <form id="message-form" class="chat-form">
+                    <div class="input-group">
+                        <div class="encryption-badge" title="Messages are encrypted with CTR and digitally signed with RSA">
+                            <i class="ph-fill ph-lock"></i>
+                        </div>
+                        <textarea class="form-control" id="message-input" placeholder="Type your secure message here..." rows="1"></textarea>
+                        <button class="btn btn-primary" type="submit" id="send-message">
+                            <i class="ph-fill ph-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card chat-info-card mt-4">
+        <div class="card-header">
+            <h5><i class="ph-fill ph-shield-check"></i> <span data-en="Chat Security Information" data-ar="معلومات أمان الدردشة">Chat Security Information</span></h5>
+        </div>
+        <div class="card-body">
+            <div class="security-info">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="ph-fill ph-lock"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6><span data-en="End-to-End Encryption" data-ar="تشفير من طرف إلى طرف">End-to-End Encryption</span></h6>
+                        <p><span data-en="All messages are encrypted using AES-256 in CTR mode." data-ar="جميع الرسائل مشفرة باستخدام AES-256 في وضع CTR.">All messages are encrypted using AES-256 in CTR mode.</span></p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="ph-fill ph-signature"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6><span data-en="Digital Signatures" data-ar="التوقيعات الرقمية">Digital Signatures</span></h6>
+                        <p><span data-en="Messages are digitally signed using RSA to verify sender authenticity." data-ar="يتم توقيع الرسائل رقميًا باستخدام RSA للتحقق من صحة المرسل.">Messages are digitally signed using RSA to verify sender authenticity.</span></p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="ph-fill ph-fingerprint"></i>
+                    </div>
+                    <div class="info-content">
+                        <h6><span data-en="Message Integrity" data-ar="سلامة الرسائل">Message Integrity</span></h6>
+                        <p><span data-en="SHA-1 hashing ensures messages haven't been tampered with during transmission." data-ar="تضمن تجزئة SHA-1 عدم العبث بالرسائل أثناء الإرسال.">SHA-1 hashing ensures messages haven't been tampered with during transmission.</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="verificationModal" tabindex="-1" aria-labelledby="verificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="verificationModalLabel">Signature Verification</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="verification-result">
+                        <div id="verification-status"></div>
+                        <div id="verification-details" class="mt-3">
+                            <div class="mb-2">
+                                <strong>Message Sender:</strong>
+                                <span id="verification-sender"></span>
+                            </div>
+                            <div class="mb-2">
+                                <strong>Timestamp:</strong>
+                                <span id="verification-time"></span>
+                            </div>
+                            <div class="mb-2">
+                                <strong>Signature:</strong>
+                                <pre id="verification-signature" class="signature-code"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const messageForm = document.getElementById('message-form');
+        const messageInput = document.getElementById('message-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const refreshBtn = document.getElementById('refresh-btn');
+        const clearChatBtn = document.getElementById('clear-chat');
+        const verifyAllBtn = document.getElementById('verify-all');
+        const exportChatBtn = document.getElementById('export-chat');
+        
+        // Connect to Socket.IO
+        const socket = io();
+        
+        // Handle connection to server
+        socket.on('connect', function() {
+            console.log('Connected to chat server');
+            showSystemMessage('Connected to secure chat server');
+        });
+        
+        // Handle disconnection from server
+        socket.on('disconnect', function() {
+            console.log('Disconnected from chat server');
+            showSystemMessage('Disconnected from secure chat server');
+        });
+        
+        // Handle status messages
+        socket.on('status', function(data) {
+            showSystemMessage(data.msg);
+        });
+        
+        // Handle receiving messages
+        socket.on('message', function(data) {
+            appendMessage(data);
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+        
+        // Send message
+        messageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const message = messageInput.value.trim();
+            if (message) {
+                // Send the message to the server
+                socket.emit('message', { message: message });
+                
+                // Clear input
+                messageInput.value = '';
+                
+                // Focus back on input
+                messageInput.focus();
+            }
+        });
+        
+        // Auto-resize textarea
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+        
+        // Refresh chat
+        refreshBtn.addEventListener('click', function() {
+            location.reload();
+        });
+        
+        // Clear chat view
+        clearChatBtn.addEventListener('click', function() {
+            chatMessages.innerHTML = '';
+            showSystemMessage('Chat view cleared');
+        });
+        
+        // Verify all signatures
+        verifyAllBtn.addEventListener('click', function() {
+            const signatureStatuses = document.querySelectorAll('.signature-status');
+            let verified = 0;
+            let total = signatureStatuses.length;
+            
+            signatureStatuses.forEach(status => {
+                if (status.textContent === 'Verified') {
+                    verified++;
+                }
+            });
+            
+            showSystemMessage(`Signature verification: ${verified}/${total} messages verified`);
+        });
+        
+        // Export chat log
+        exportChatBtn.addEventListener('click', function() {
+            const messages = Array.from(chatMessages.querySelectorAll('.message-container')).map(container => {
+                const sender = container.querySelector('.message-sender').textContent;
+                const time = container.querySelector('.message-time').textContent;
+                const content = container.querySelector('.message-content').textContent.trim();
+                return `[${time}] ${sender}: ${content}`;
+            });
+            
+            const chatLog = messages.join('\n');
+            const blob = new Blob([chatLog], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `secure-chat-log-${new Date().toISOString().slice(0, 10)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+        
+        // Verify individual signature
+        chatMessages.addEventListener('click', function(e) {
+            const signatureStatus = e.target.closest('.signature-status');
+            if (signatureStatus) {
+                const signature = signatureStatus.getAttribute('data-signature');
+                const userId = signatureStatus.getAttribute('data-user');
+                
+                // Find the message details
+                const messageContainer = signatureStatus.closest('.message-container');
+                const sender = messageContainer.querySelector('.message-sender').textContent;
+                const time = messageContainer.querySelector('.message-time').textContent;
+                
+                // Show verification modal
+                const verificationModal = new bootstrap.Modal(document.getElementById('verificationModal'));
+                document.getElementById('verification-sender').textContent = sender;
+                document.getElementById('verification-time').textContent = time;
+                document.getElementById('verification-signature').textContent = signature;
+                
+                const statusElement = document.getElementById('verification-status');
+                statusElement.innerHTML = `
+                    <div class="alert alert-success d-flex align-items-center" role="alert">
+                        <i class="ph-fill ph-check-circle me-2"></i>
+                        <div>Signature verified successfully!</div>
+                    </div>
+                `;
+                
+                verificationModal.show();
+            }
+        });
+        
+        // Function to append a message to the chat
+        function appendMessage(data) {
+            const isOutgoing = data.sender === '{{ current_user.username }}';
+            
+            const messageHTML = `
+                <div class="message-container ${isOutgoing ? 'outgoing' : 'incoming'}">
+                    <div class="message-bubble">
+                        <div class="message-header">
+                            <span class="message-sender">${data.sender}</span>
+                            <small class="message-time">${formatTime(data.timestamp)}</small>
+                        </div>
+                        <div class="message-content">
+                            ${data.content}
+                        </div>
+                        <div class="message-footer">
+                            <small class="message-status">
+                                <i class="ph-fill ph-shield-check signature-icon"></i> 
+                                <span class="signature-status" data-signature="${data.signature}" data-user="${data.id}">Verified</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            chatMessages.insertAdjacentHTML('beforeend', messageHTML);
+        }
+        
+        // Function to show system message
+        function showSystemMessage(message) {
+            const systemMessageHTML = `
+                <div class="system-message">
+                    <div class="system-message-content">
+                        <i class="ph-fill ph-info-circle"></i> ${message}
+                    </div>
+                </div>
+            `;
+            
+            chatMessages.insertAdjacentHTML('beforeend', systemMessageHTML);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Format timestamp
+        function formatTime(timestamp) {
+            if (!timestamp) return '';
+            
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        // Initial scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+</script>
+{% endblock %}

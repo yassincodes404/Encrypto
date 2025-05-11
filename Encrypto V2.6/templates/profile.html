@@ -1,0 +1,430 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Secure Encryption Portal{% endblock %}
+{% block page_title %}Profile{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card profile-card">
+                <div class="card-body text-center">
+                    <div class="profile-image">
+                        <img src="{{ url_for('static', filename='images/avatar.png') }}" alt="Profile Picture" class="profile-pic">
+                        <button class="btn btn-sm btn-outline-primary profile-image-change">
+                            <i class="ph-fill ph-camera"></i>
+                        </button>
+                    </div>
+                    <h3 class="profile-name">{{ current_user.username }}</h3>
+                    <p class="text-muted">{{ current_user.email }}</p>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">{{ current_user.created_at.strftime('%Y-%m-%d') }}</span>
+                            <span class="stat-label">Member Since</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card security-status-card mt-4">
+                <div class="card-header">
+                    <h5><i class="ph-fill ph-shield"></i> <span data-en="Security Status" data-ar="حالة الأمان">Security Status</span></h5>
+                </div>
+                <div class="card-body">
+                    <ul class="security-status-list">
+                        <li class="status-item secure">
+                            <i class="ph-fill ph-check"></i>
+                            <span class="status-text">
+                                <span data-en="Strong Password" data-ar="كلمة مرور قوية">Strong Password</span>
+                            </span>
+                        </li>
+                        <li class="status-item secure">
+                            <i class="ph-fill ph-check"></i>
+                            <span class="status-text">
+                                <span data-en="RSA Keys Generated" data-ar="تم إنشاء مفاتيح RSA">RSA Keys Generated</span>
+                            </span>
+                        </li>
+                        <li class="status-item warning">
+                            <i class="ph-fill ph-warning"></i>
+                            <span class="status-text">
+                                <span data-en="Two-Factor Authentication Disabled" data-ar="المصادقة الثنائية معطلة">Two-Factor Authentication Disabled</span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card profile-details-card">
+                <div class="card-header">
+                    <h5><i class="ph-fill ph-user-circle"></i> <span data-en="User Profile" data-ar="الملف الشخصي للمستخدم">User Profile</span></h5>
+                </div>
+                <div class="card-body">
+                    <div class="profile-section">
+                        <div class="profile-avatar">
+                            <div class="avatar-circle">
+                                <span class="initials">{{ current_user.username[0].upper() }}</span>
+                            </div>
+                        </div>
+                        <div class="profile-info">
+                            <h4>{{ current_user.username }}</h4>
+                            <p><i class="ph-fill ph-envelope"></i> {{ current_user.email }}</p>
+                            <p><i class="ph-fill ph-calendar"></i> Member since: {{ current_user.created_at.strftime('%B %d, %Y') }}</p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="profile-section">
+                        <h5><i class="ph-fill ph-key"></i> <span data-en="Change Password" data-ar="تغيير كلمة المرور">Change Password</span></h5>
+                        <form id="change-password-form">
+                            <div class="mb-3">
+                                <label for="current-password" class="form-label"><span data-en="Current Password" data-ar="كلمة المرور الحالية">Current Password</span></label>
+                                <input type="password" class="form-control" id="current-password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="new-password" class="form-label"><span data-en="New Password" data-ar="كلمة المرور الجديدة">New Password</span></label>
+                                <input type="password" class="form-control" id="new-password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirm-password" class="form-label"><span data-en="Confirm New Password" data-ar="تأكيد كلمة المرور الجديدة">Confirm New Password</span></label>
+                                <input type="password" class="form-control" id="confirm-password" required>
+                            </div>
+                            <div class="password-requirements">
+                                <p><i class="ph-fill ph-info"></i> <span data-en="Password Requirements:" data-ar="متطلبات كلمة المرور:">Password Requirements:</span></p>
+                                <ul>
+                                    <li><span data-en="At least 8 characters long" data-ar="لا تقل عن 8 أحرف">At least 8 characters long</span></li>
+                                    <li><span data-en="Contain at least one uppercase letter" data-ar="تحتوي على حرف كبير واحد على الأقل">Contain at least one uppercase letter</span></li>
+                                    <li><span data-en="Contain at least one number" data-ar="تحتوي على رقم واحد على الأقل">Contain at least one number</span></li>
+                                    <li><span data-en="Contain at least one special character" data-ar="تحتوي على حرف خاص واحد على الأقل">Contain at least one special character</span></li>
+                                </ul>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ph-fill ph-check"></i> <span data-en="Update Password" data-ar="تحديث كلمة المرور">Update Password</span>
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="profile-section">
+                        <h5><i class="ph-fill ph-key-return"></i> <span data-en="Encryption Keys" data-ar="مفاتيح التشفير">Encryption Keys</span></h5>
+                        <div class="keys-info">
+                            <p><span data-en="Your account has a pre-generated RSA key pair for secure messaging." data-ar="يحتوي حسابك على زوج مفاتيح RSA مُنشأ مسبقًا للمراسلة الآمنة.">Your account has a pre-generated RSA key pair for secure messaging.</span></p>
+                            
+                            <div class="accordion" id="keysAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="publicKeyHeading">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#publicKeyCollapse" aria-expanded="false" aria-controls="publicKeyCollapse">
+                                            <i class="ph-fill ph-eye"></i> <span data-en="View Public Key" data-ar="عرض المفتاح العام">View Public Key</span>
+                                        </button>
+                                    </h2>
+                                    <div id="publicKeyCollapse" class="accordion-collapse collapse" aria-labelledby="publicKeyHeading" data-bs-parent="#keysAccordion">
+                                        <div class="accordion-body">
+                                            <div class="key-display">
+                                                <pre>{{ public_key }}</pre>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-secondary copy-key" data-key="public">
+                                                <i class="ph-fill ph-copy"></i> <span data-en="Copy to Clipboard" data-ar="نسخ إلى الحافظة">Copy to Clipboard</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                                    <div id="fingerprintCollapse" class="accordion-collapse collapse" aria-labelledby="fingerprintHeading" data-bs-parent="#keysAccordion">
+                                        <div class="accordion-body">
+                                            <div class="key-display">
+                                                <code>{{ key_fingerprint }}</code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <button class="btn btn-sm btn-outline-primary" id="regenerate-keys" disabled>
+                                    <i class="ph-fill ph-arrows-clockwise"></i> <span data-en="Regenerate Keys (Coming Soon)" data-ar="إعادة إنشاء المفاتيح (قريبًا)">Regenerate Keys (Coming Soon)</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="profile-section">
+                        <h5><i class="ph-fill ph-activity"></i> <span data-en="Account Activity" data-ar="نشاط الحساب">Account Activity</span></h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th><span data-en="Activity" data-ar="النشاط">Activity</span></th>
+                                        <th><span data-en="Date & Time" data-ar="التاريخ والوقت">Date & Time</span></th>
+                                        <th><span data-en="IP Address" data-ar="عنوان IP">IP Address</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><i class="ph-fill ph-sign-in"></i> <span data-en="Last Login" data-ar="آخر تسجيل دخول">Last Login</span></td>
+                                        <td>{{ last_login_time }}</td>
+                                        <td>{{ last_login_ip }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="ph-fill ph-key"></i> <span data-en="Password Changed" data-ar="تم تغيير كلمة المرور">Password Changed</span></td>
+                                        <td>{{ password_changed_time or 'Never' }}</td>
+                                        <td>{{ password_changed_ip or '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="ph-fill ph-user-circle-plus"></i> <span data-en="Account Created" data-ar="تم إنشاء الحساب">Account Created</span></td>
+                                        <td>{{ current_user.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                        <td>{{ account_created_ip }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Key Regeneration Modal -->
+<div class="modal fade" id="confirmRegenerateModal" tabindex="-1" aria-labelledby="confirmRegenerateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmRegenerateModalLabel">Confirm Key Regeneration</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="ph-fill ph-exclamation-circle"></i> 
+                    <strong>Warning:</strong> This action cannot be undone!
+                </div>
+                <p>Regenerating your encryption keys will:</p>
+                <ul>
+                    <li>Create new RSA key pairs for your account</li>
+                    <li>Make all previously encrypted data inaccessible</li>
+                    <li>Require re-encryption of any data you wish to keep</li>
+                </ul>
+                <p>Are you sure you want to proceed?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-regenerate-btn">
+                    <i class="ph-fill ph-sync"></i> Regenerate Keys
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const profileForm = document.getElementById('profile-form');
+        const passwordForm = document.getElementById('password-form');
+        const newPasswordInput = document.getElementById('new-password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const currentPasswordInput = document.getElementById('current-password');
+        const changePasswordBtn = document.getElementById('change-password-btn');
+        const regenerateKeysBtn = document.getElementById('regenerate-keys-btn');
+        const confirmRegenerateBtn = document.getElementById('confirm-regenerate-btn');
+        const progressBar = document.querySelector('.progress-bar');
+        
+        // Password strength requirements
+        const requirements = {
+            length: false,
+            uppercase: false,
+            lowercase: false,
+            number: false
+        };
+        
+        // Toggle password visibility
+        const toggleBtns = document.querySelectorAll('.password-toggle');
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const input = this.parentNode.querySelector('input');
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('ph-eye');
+                    icon.classList.add('ph-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('ph-eye-slash');
+                    icon.classList.add('ph-eye');
+                }
+            });
+        });
+        
+        // Check password strength
+        newPasswordInput.addEventListener('input', function() {
+            const value = this.value;
+            
+            // Check requirements
+            requirements.length = value.length >= 8;
+            requirements.uppercase = /[A-Z]/.test(value);
+            requirements.lowercase = /[a-z]/.test(value);
+            requirements.number = /[0-9]/.test(value);
+            
+            // Update requirement indicators
+            updateRequirementIndicator('req-length', requirements.length);
+            updateRequirementIndicator('req-uppercase', requirements.uppercase);
+            updateRequirementIndicator('req-lowercase', requirements.lowercase);
+            updateRequirementIndicator('req-number', requirements.number);
+            
+            // Calculate strength percentage
+            const strength = Object.values(requirements).filter(Boolean).length * 25;
+            progressBar.style.width = strength + '%';
+            progressBar.setAttribute('aria-valuenow', strength);
+            
+            // Set color based on strength
+            if (strength < 50) {
+                progressBar.className = 'progress-bar bg-danger';
+            } else if (strength < 100) {
+                progressBar.className = 'progress-bar bg-warning';
+            } else {
+                progressBar.className = 'progress-bar bg-success';
+            }
+            
+            validatePasswordForm();
+        });
+        
+        // Check if passwords match
+        confirmPasswordInput.addEventListener('input', validatePasswordForm);
+        currentPasswordInput.addEventListener('input', validatePasswordForm);
+        
+        // Update requirement indicator
+        function updateRequirementIndicator(id, fulfilled) {
+            const element = document.getElementById(id);
+            const icon = element.querySelector('i');
+            
+            if (fulfilled) {
+                element.classList.add('fulfilled');
+                icon.className = 'ph-fill ph-check';
+            } else {
+                element.classList.remove('fulfilled');
+                icon.className = 'ph-fill ph-times';
+            }
+        }
+        
+        // Validate password form
+        function validatePasswordForm() {
+            const currentPassword = currentPasswordInput.value;
+            const newPassword = newPasswordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            const allRequirementsMet = Object.values(requirements).every(Boolean);
+            
+            if (allRequirementsMet && newPassword === confirmPassword && currentPassword && newPassword !== currentPassword) {
+                changePasswordBtn.removeAttribute('disabled');
+            } else {
+                changePasswordBtn.setAttribute('disabled', 'disabled');
+            }
+        }
+        
+        // Handle profile form submission
+        profileForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // In a real application, you would send the form data to the server
+            // For demo purposes, we'll just show a success message
+            showToast('Profile updated successfully!', 'success');
+        });
+        
+        // Handle password form submission
+        passwordForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const currentPassword = currentPasswordInput.value;
+            const newPassword = newPasswordInput.value;
+            
+            // Call the API to change password
+            fetch('/api/change-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    current_password: currentPassword,
+                    new_password: newPassword
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Password changed successfully!', 'success');
+                    // Reset form
+                    passwordForm.reset();
+                    progressBar.style.width = '0%';
+                    progressBar.className = 'progress-bar';
+                    document.querySelectorAll('.requirement').forEach(req => {
+                        req.classList.remove('fulfilled');
+                        req.querySelector('i').className = 'ph-fill ph-times';
+                    });
+                    changePasswordBtn.setAttribute('disabled', 'disabled');
+                } else {
+                    showToast(data.error || 'Failed to change password', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            });
+        });
+        
+        // Handle key regeneration
+        regenerateKeysBtn.addEventListener('click', function() {
+            const regenerateModal = new bootstrap.Modal(document.getElementById('confirmRegenerateModal'));
+            regenerateModal.show();
+        });
+        
+        confirmRegenerateBtn.addEventListener('click', function() {
+            // In a real application, you would send a request to regenerate keys
+            // For demo purposes, we'll just show a success message
+            showToast('Encryption keys regenerated successfully!', 'success');
+            
+            // Close the modal
+            const regenerateModal = bootstrap.Modal.getInstance(document.getElementById('confirmRegenerateModal'));
+            regenerateModal.hide();
+        });
+        
+        // Toast notification function
+        function showToast(message, type = 'info') {
+            // Create toast container if it doesn't exist
+            if (!document.getElementById('toast-container')) {
+                const toastContainer = document.createElement('div');
+                toastContainer.id = 'toast-container';
+                toastContainer.className = 'position-fixed bottom-0 end-0 p-3';
+                document.body.appendChild(toastContainer);
+            }
+            
+            const toastId = 'toast-' + Date.now();
+            const toastHTML = `
+                <div id="${toastId}" class="toast align-items-center text-white bg-${type === 'error' ? 'danger' : type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'info'}" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('toast-container').insertAdjacentHTML('beforeend', toastHTML);
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+            toast.show();
+            
+            // Remove toast after it's hidden
+            toastElement.addEventListener('hidden.bs.toast', function() {
+                toastElement.remove();
+            });
+        }
+    });
+</script>
+{% endblock %}

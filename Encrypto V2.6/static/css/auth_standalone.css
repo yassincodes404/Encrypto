@@ -1,0 +1,598 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Cairo', 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.4s ease, color 0.4s ease;
+    background-color: var(--bg-color); /* Apply initial background */
+    color: var(--text-color); /* Apply initial text color */
+}
+
+html[dir="rtl"] body {
+    direction: rtl;
+}
+
+:root {
+    --bg-color: #f4f7fc;
+    --form-bg-color: #ffffff;
+    --text-color: #333333;
+    --text-muted-color: #777777;
+    --primary-color: #007bff;
+    --primary-hover-color: #0056b3;
+    --input-bg-color: #ffffff;
+    --input-border-color: #ced4da;
+    --input-focus-border-color: var(--primary-color);
+    --button-text-color: #ffffff;
+    --icon-color: #aaaaaa;
+    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --control-bg: #eee;
+    --control-hover-bg: #ddd;
+    --modal-overlay-bg: rgba(0, 0, 0, 0.6);
+}
+
+/* Dark Theme Variables applied via [data-theme="dark"] */
+[data-theme="dark"] {
+    --bg-color: #121a2a;
+    --form-bg-color: #1e293b;
+    --text-color: #e2e8f0;
+    --text-muted-color: #94a3b8;
+    --primary-color: #38bdf8; /* Lighter blue for dark */
+    --primary-hover-color: #0ea5e9;
+    --input-bg-color: #2d3748;
+    --input-border-color: #4a5568;
+    --input-focus-border-color: var(--primary-color);
+    --button-text-color: #121a2a; /* Darker text on light blue button */
+    --icon-color: #94a3b8;
+    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    --control-bg: #2d3748;
+    --control-hover-bg: #4a5568;
+    --modal-overlay-bg: rgba(0, 0, 0, 0.7);
+}
+
+/* Apply dark theme variables to body when data attribute is set */
+body[data-theme="dark"] {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.body-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+    /* === التعديل هنا === */
+    /* زيادة الـ padding العلوي لترك مساحة لأزرار التحكم */
+    padding-top: 70px; /* زيادة المساحة العلوية (كانت 20px ضمن padding الشامل) */
+    /* ==================== */
+    position: relative; /* ضروري لتحديد موقع controls-container */
+}
+
+.controls-container {
+    position: absolute;
+    /* === لا تغيير هنا === */
+    top: 20px; /* البقاء في الأعلى */
+    right: 20px;
+    /* ==================== */
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+html[dir="rtl"] .controls-container {
+    right: auto;
+    left: 20px;
+}
+
+.control-button {
+    background-color: var(--control-bg);
+    color: var(--text-color);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.control-button:hover {
+    background-color: var(--control-hover-bg);
+}
+
+#theme-toggle i {
+  color: inherit; /* Inherit color from button */
+  transition: color 0.3s ease;
+}
+
+.auth-container {
+    background-color: var(--form-bg-color);
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    width: 100%;
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    min-height: 450px; /* Ensure container has height for transitions */
+    overflow: hidden; /* Hide forms that are transitioning out */
+}
+
+/* --- أنماط رسائل Flash (تضاف إذا لم تكن موجودة) --- */
+.auth-flash-messages {
+    margin-bottom: 15px; /* مسافة بين الرسالة وحاوية المصادقة */
+    width: 100%; /* تأخذ العرض الكامل داخل body-container */
+    /* لا تحتاج لـ position: absolute هنا */
+    text-align: center;
+}
+
+.auth-flash-messages .alert {
+    /* الأنماط الموجودة بالفعل في القالب جيدة، يمكن تعديلها هنا إذا لزم الأمر */
+    /* مثال: يمكنك إضافة حد أقصى للعرض إذا أردت */
+    /* max-width: 90%; */
+    /* margin-left: auto; */
+    /* margin-right: auto; */
+    padding: 10px 15px; /* تعديل الحشو الداخلي */
+    border-radius: 6px;
+    font-size: 0.9rem;
+    border: 1px solid transparent; /* لإظهار الحدود لاحقًا بشكل أفضل */
+}
+/* تحديد ألوان الحدود لرسائل التنبيه */
+.auth-flash-messages .alert-danger { border-color: color-mix(in srgb, #dc3545, transparent 70%); }
+.auth-flash-messages .alert-success { border-color: color-mix(in srgb, #28a745, transparent 70%); }
+.auth-flash-messages .alert-warning { border-color: color-mix(in srgb, #ffc107, transparent 70%); }
+.auth-flash-messages .alert-info { border-color: color-mix(in srgb, var(--primary-color), transparent 70%); }
+/* ----------------------------------------------------- */
+
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px 40px; /* Match container padding */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(30px); /* Start off-screen */
+    transition: opacity 0.4s ease, visibility 0s linear 0.4s, transform 0.4s ease;
+    z-index: 1; /* Below active form */
+}
+
+.auth-form.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0); /* Slide in */
+    transition: opacity 0.4s ease 0.1s, visibility 0s linear 0.1s, transform 0.4s ease 0.1s;
+    z-index: 2; /* On top */
+}
+
+.auth-form h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: var(--text-color);
+    transition: color 0.4s ease;
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px 12px 40px; /* Space for icon on left */
+    border: 1px solid var(--input-border-color);
+    border-radius: 8px;
+    background-color: var(--input-bg-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: border-color 0.3s ease, background-color 0.4s ease, color 0.4s ease, padding 0.3s ease;
+}
+/* Adjust padding for password fields with toggle icon */
+.input-group input[type="password"],
+.input-group input[type="text"][data-is-password="true"]
+{
+    padding-right: 45px; /* Space for toggle icon */
+    padding-left: 40px;
+}
+html[dir="rtl"] .input-group input[type="password"],
+html[dir="rtl"] .input-group input[type="text"][data-is-password="true"]
+{
+    padding-left: 45px; /* Space for toggle icon */
+    padding-right: 40px;
+}
+
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--input-focus-border-color);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--input-focus-border-color), transparent 80%);
+}
+
+/* Floating Label */
+.input-group label {
+    position: absolute;
+    top: 13px; /* Initial vertical position */
+    left: 40px; /* Initial position after icon */
+    padding: 0 5px;
+    color: var(--text-muted-color);
+    pointer-events: none;
+    background-color: var(--input-bg-color); /* Match input bg for overlap effect */
+    transition: all 0.2s ease, background-color 0.4s ease, color 0.4s ease;
+    font-size: 1em;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+    top: -10px; /* Move up */
+    left: 35px; /* Adjust horizontal position slightly */
+    font-size: 0.8em;
+    color: var(--primary-color);
+}
+
+.input-icon {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: var(--icon-color);
+    transition: color 0.4s ease;
+    z-index: 2; /* Above input background */
+}
+
+.password-toggle-icon {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    color: var(--icon-color);
+    cursor: pointer;
+    z-index: 3; /* Above input content */
+    transition: color 0.3s ease;
+}
+.password-toggle-icon:hover {
+    color: var(--primary-color);
+}
+
+/* RTL Adjustments */
+html[dir="rtl"] .input-group input {
+    padding: 12px 40px 12px 15px; /* Icon on right */
+}
+
+html[dir="rtl"] .input-group label {
+    left: auto;
+    right: 40px; /* Initial position after icon (RTL) */
+}
+
+html[dir="rtl"] .input-group input:focus + label,
+html[dir="rtl"] .input-group input:not(:placeholder-shown) + label {
+    right: 35px; /* Adjust horizontal position slightly (RTL) */
+    left: auto;
+}
+
+html[dir="rtl"] .input-icon {
+    left: auto;
+    right: 15px;
+}
+
+html[dir="rtl"] .password-toggle-icon {
+    right: auto;
+    left: 15px;
+}
+
+
+.submit-button {
+    padding: 12px 20px;
+    background-color: var(--primary-color);
+    color: var(--button-text-color);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease, color 0.4s ease, transform 0.1s ease;
+}
+
+.submit-button:hover {
+    background-color: var(--primary-hover-color);
+}
+
+.submit-button:active {
+    transform: scale(0.98);
+}
+
+.switch-link, .terms-link-container {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted-color);
+    margin-top: 15px;
+    transition: color 0.4s ease;
+}
+.terms-link-container {
+    margin-top: 10px; /* Less margin for terms agreement */
+}
+
+.switch-link a, .terms-link-container a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.switch-link a:hover, .terms-link-container a:hover {
+    text-decoration: underline;
+    color: var(--primary-hover-color);
+}
+
+/* Message Area Styling */
+#message-area {
+    margin-top: 15px;
+    text-align: center;
+    min-height: 20px; /* Reserve space */
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--primary-color); /* Default color */
+    transition: color 0.4s ease;
+}
+
+/* Modal Styling */
+.modal-overlay {
+    position: fixed;
+    inset: 0; /* Covers the whole viewport */
+    background-color: var(--modal-overlay-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.modal-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0s linear 0s;
+}
+
+.modal-content {
+    background-color: var(--form-bg-color);
+    padding: 30px 40px;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    position: relative;
+    box-shadow: var(--box-shadow);
+    max-height: 85vh; /* Prevent modal from being too tall */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+    color: var(--text-color);
+    transform: scale(0.95); /* Start slightly smaller */
+    opacity: 0;
+    transition: background-color 0.4s ease, color 0.4s ease, transform 0.3s ease, opacity 0.3s ease;
+}
+
+.modal-overlay.visible .modal-content {
+    transform: scale(1); /* Scale up to full size */
+    opacity: 1;
+}
+
+.modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--text-muted-color);
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+.modal-close-button:hover {
+    color: var(--text-color);
+}
+html[dir="rtl"] .modal-close-button {
+    right: auto;
+    left: 15px;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--text-color);
+    transition: color 0.4s ease;
+}
+.modal-content h6 {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 700;
+    color: var(--text-color);
+    transition: color 0.4s ease;
+}
+
+.modal-body p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+    color: var(--text-color);
+    transition: color 0.4s ease;
+}
+
+/* Terms Agreement Styling */
+.terms-agreement-container {
+    display: flex;
+    align-items: flex-start; /* Align checkbox with start of text */
+    gap: 8px;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    color: var(--text-muted-color);
+    transition: color 0.4s ease;
+}
+
+.terms-agreement-container input[type="checkbox"] {
+    margin-top: 2px; /* Adjust vertical alignment */
+    accent-color: var(--primary-color); /* Style checkbox */
+    cursor: pointer;
+    flex-shrink: 0; /* Prevent checkbox from shrinking */
+}
+
+.terms-agreement-container label {
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+/* Disabled Button Styling */
+.submit-button:disabled {
+    background-color: color-mix(in srgb, var(--primary-color), transparent 60%);
+    color: color-mix(in srgb, var(--button-text-color), transparent 40%);
+    cursor: not-allowed;
+    transform: none; /* Disable active transform */
+}
+/* Slightly different disabled state for dark theme */
+[data-theme="dark"] .submit-button:disabled {
+     background-color: color-mix(in srgb, var(--primary-color), transparent 70%);
+     color: color-mix(in srgb, var(--button-text-color), transparent 60%);
+}
+
+/* Modal Footer Styling */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end; /* Buttons to the right */
+    gap: 10px;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid var(--input-border-color);
+    transition: border-color 0.4s ease;
+}
+
+html[dir="rtl"] .modal-footer {
+    justify-content: flex-start; /* Buttons to the left (RTL) */
+}
+
+.modal-button {
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease;
+}
+
+.modal-button-primary {
+    background-color: var(--primary-color);
+    color: var(--button-text-color);
+}
+.modal-button-primary:hover {
+    background-color: var(--primary-hover-color);
+}
+.modal-button-primary:active {
+     transform: scale(0.97);
+}
+
+.modal-button-secondary {
+    background-color: var(--control-bg); /* Use control background */
+    color: var(--text-color);
+    border: 1px solid var(--input-border-color);
+}
+.modal-button-secondary:hover {
+    background-color: var(--control-hover-bg);
+}
+.modal-button-secondary:active {
+     transform: scale(0.97);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .auth-container, .modal-content {
+        padding: 25px 30px;
+    }
+}
+
+@media (max-width: 480px) {
+     .body-container {
+        padding: 10px; /* Less padding on very small screens */
+        padding-top: 60px; /* Keep enough top padding */
+    }
+    .auth-container, .modal-content {
+        padding: 20px 25px;
+    }
+    .auth-form {
+        padding: 20px 25px; /* Match container padding */
+    }
+    .auth-form h2 {
+        font-size: 1.5rem;
+    }
+    .input-group input {
+        font-size: 0.95rem;
+        padding-top: 14px; /* Adjust padding slightly for label */
+        padding-bottom: 10px;
+    }
+     .input-group label {
+        top: 14px; /* Adjust initial label position */
+    }
+    .submit-button {
+        font-size: 1rem;
+    }
+    .controls-container {
+        top: 10px; /* Closer to top on small screens */
+        right: 10px;
+    }
+    html[dir="rtl"] .controls-container {
+        left: 10px;
+        right: auto;
+    }
+
+    /* Ensure icons and labels work on smaller screens */
+    .input-group input[type="password"],
+    .input-group input[type="text"][data-is-password="true"] {
+        padding-right: 40px; /* Keep space for toggle */
+        padding-left: 35px; /* Keep space for main icon */
+    }
+    html[dir="rtl"] .input-group input[type="password"],
+    html[dir="rtl"] .input-group input[type="text"][data-is-password="true"] {
+        padding-left: 40px; /* Keep space for toggle */
+        padding-right: 35px; /* Keep space for main icon */
+    }
+    .input-icon { left: 12px; }
+    .password-toggle-icon { right: 12px; }
+    html[dir="rtl"] .input-icon { right: 12px; left: auto; }
+    html[dir="rtl"] .password-toggle-icon { left: 12px; right: auto; }
+
+    /* Floating label adjustments for smaller screens */
+    .input-group label { left: 35px; }
+    .input-group input:focus + label,
+    .input-group input:not(:placeholder-shown) + label { left: 30px; }
+
+    html[dir="rtl"] .input-group label { right: 35px; left: auto;}
+    html[dir="rtl"] .input-group input:focus + label,
+    html[dir="rtl"] .input-group input:not(:placeholder-shown) + label { right: 30px; left:auto;}
+
+     .terms-agreement-container {
+        font-size: 0.8rem;
+    }
+    .modal-footer {
+        flex-direction: column-reverse; /* Stack buttons vertically */
+        gap: 8px;
+    }
+    .modal-button {
+        width: 100%; /* Make buttons full width */
+    }
+}

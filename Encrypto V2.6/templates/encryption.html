@@ -1,0 +1,562 @@
+{% extends "base.html" %}
+
+{% block title %}Encryption - Secure Encryption Portal{% endblock %}
+{% block page_title %}Encryption Tools{% endblock %}
+
+{% block extra_css %}
+<style>
+    .algorithm-tab-content {
+        display: none;
+    }
+    .algorithm-tab-content.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="encryption-container">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4><i class="ph-fill ph-lock-key"></i> <span data-en="Advanced Encryption Tools" data-ar="أدوات التشفير المتقدمة">Advanced Encryption Tools</span></h4>
+        </div>
+        <div class="card-body">
+            <div class="algorithm-tabs">
+                <ul class="nav nav-tabs" id="algorithmTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="sha1-tab" data-bs-toggle="tab" data-bs-target="#sha1" type="button" role="tab" aria-controls="sha1" aria-selected="true">
+                            <i class="ph-fill ph-fingerprint"></i> SHA-1
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="ctr-tab" data-bs-toggle="tab" data-bs-target="#ctr" type="button" role="tab" aria-controls="ctr" aria-selected="false">
+                            <i class="ph-fill ph-swap"></i> CTR
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="rsa-tab" data-bs-toggle="tab" data-bs-target="#rsa" type="button" role="tab" aria-controls="rsa" aria-selected="false">
+                            <i class="ph-fill ph-key"></i> RSA
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content mt-3" id="algorithmTabsContent">
+                    <!-- SHA-1 Tab -->
+                    <div class="tab-pane fade show active" id="sha1" role="tabpanel" aria-labelledby="sha1-tab">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card algorithm-card">
+                                    <div class="card-header">
+                                        <h5><span data-en="SHA-1 Hashing" data-ar="تجزئة SHA-1">SHA-1 Hashing</span></h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-info">SHA-1 is a cryptographic hash function that produces a 160-bit (20-byte) hash value. It's typically used for digital signatures and data integrity verification.</p>
+                                        
+                                        <div class="form-group mb-3">
+                                            <label for="sha1-input"><span data-en="Input Text" data-ar="نص الإدخال">Input Text</span></label>
+                                            <textarea class="form-control" id="sha1-input" rows="4" placeholder="Enter text to hash"></textarea>
+                                        </div>
+                                        
+                                        <button id="sha1-hash-btn" class="btn btn-primary">
+                                            <i class="ph-fill ph-fingerprint"></i> <span data-en="Generate SHA-1 Hash" data-ar="إنشاء تجزئة SHA-1">Generate SHA-1 Hash</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card result-card">
+                                    <div class="card-header">
+                                        <h5><span data-en="SHA-1 Hash Result" data-ar="نتيجة تجزئة SHA-1">SHA-1 Hash Result</span></h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="result-container">
+                                            <pre id="sha1-output" class="result-output">Hash will appear here</pre>
+                                        </div>
+                                        <div class="mt-3 d-flex justify-content-between">
+                                            <button id="sha1-copy-btn" class="btn btn-sm btn-outline-secondary">
+                                                <i class="ph-fill ph-copy"></i> <span data-en="Copy to Clipboard" data-ar="نسخ إلى الحافظة">Copy to Clipboard</span>
+                                            </button>
+                                            <button id="sha1-clear-btn" class="btn btn-sm btn-outline-danger">
+                                                <i class="ph-fill ph-trash"></i> <span data-en="Clear" data-ar="مسح">Clear</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- CTR Tab -->
+                    <div class="tab-pane fade" id="ctr" role="tabpanel" aria-labelledby="ctr-tab">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card algorithm-card">
+                                    <div class="card-header">
+                                        <h5><span data-en="AES-CTR Encryption/Decryption" data-ar="تشفير/فك تشفير AES-CTR">AES-CTR Encryption/Decryption</span></h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-info">AES in Counter Mode (CTR) is a symmetric encryption algorithm that turns a block cipher into a stream cipher. It provides confidentiality but not authentication.</p>
+                                        
+                                        <div class="form-group mb-3">
+                                            <label for="ctr-input"><span data-en="Input Text" data-ar="نص الإدخال">Input Text</span></label>
+                                            <textarea class="form-control" id="ctr-input" rows="4" placeholder="Enter text to encrypt/decrypt"></textarea>
+                                        </div>
+                                        
+                                        <div class="form-group mb-3" id="ctr-key-container">
+                                            <label for="ctr-key"><span data-en="Encryption Key" data-ar="مفتاح التشفير">Encryption Key</span></label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="ctr-key" placeholder="Key will be generated automatically">
+                                                <button class="btn btn-outline-secondary" type="button" id="ctr-generate-key">
+                                                    <i class="ph-fill ph-random"></i> <span data-en="Generate" data-ar="توليد">Generate</span>
+                                                </button>
+                                            </div>
+                                            <small class="form-text text-muted">For decryption, paste the key that was used for encryption.</small>
+                                        </div>
+                                        
+                                        <div class="btn-group mb-3" role="group">
+                                            <button id="ctr-encrypt-btn" class="btn btn-primary">
+                                                <i class="ph-fill ph-lock"></i> <span data-en="Encrypt" data-ar="تشفير">Encrypt</span>
+                                            </button>
+                                            <button id="ctr-decrypt-btn" class="btn btn-secondary">
+                                                <i class="ph-fill ph-unlock"></i> <span data-en="Decrypt" data-ar="فك التشفير">Decrypt</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card result-card">
+                                    <div class="card-header">
+                                        <h5><span data-en="CTR Result" data-ar="نتيجة CTR">CTR Result</span></h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="result-container">
+                                            <pre id="ctr-output" class="result-output">Result will appear here</pre>
+                                        </div>
+                                        <div class="mt-3 d-flex justify-content-between">
+                                            <button id="ctr-copy-btn" class="btn btn-sm btn-outline-secondary">
+                                                <i class="ph-fill ph-copy"></i> <span data-en="Copy to Clipboard" data-ar="نسخ إلى الحافظة">Copy to Clipboard</span>
+                                            </button>
+                                            <button id="ctr-clear-btn" class="btn btn-sm btn-outline-danger">
+                                                <i class="ph-fill ph-trash"></i> <span data-en="Clear" data-ar="مسح">Clear</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- RSA Tab -->
+                    <div class="tab-pane fade" id="rsa" role="tabpanel" aria-labelledby="rsa-tab">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card algorithm-card">
+                                    <div class="card-header">
+                                        <h5><span data-en="RSA Encryption/Decryption" data-ar="تشفير/فك تشفير RSA">RSA Encryption/Decryption</span></h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="text-info">RSA is a public-key cryptosystem that is widely used for secure data transmission. It uses a pair of keys: public key for encryption and private key for decryption.</p>
+                                        
+                                        <div class="form-group mb-3">
+                                            <label for="rsa-input"><span data-en="Input Text" data-ar="نص الإدخال">Input Text</span></label>
+                                            <textarea class="form-control" id="rsa-input" rows="4" placeholder="Enter text to encrypt/decrypt"></textarea>
+                                        </div>
+                                        
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="rsa-use-my-keys" checked>
+                                            <label class="form-check-label" for="rsa-use-my-keys">
+                                                <span data-en="Use my account keys" data-ar="استخدام مفاتيح حسابي">Use my account keys</span>
+                                            </label>
+                                            <small class="form-text text-muted d-block">Your account has a pre-generated RSA key pair.</small>
+                                        </div>
+                                        
+                                        <div class="btn-group mb-3" role="group">
+                                            <button id="rsa-encrypt-btn" class="btn btn-primary">
+                                                <i class="ph-fill ph-lock"></i> <span data-en="Encrypt" data-ar="تشفير">Encrypt</span>
+                                            </button>
+                                            <button id="rsa-decrypt-btn" class="btn btn-secondary">
+                                                <i class="ph-fill ph-unlock"></i> <span data-en="Decrypt" data-ar="فك التشفير">Decrypt</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card result-card">
+                                    <div class="card-header">
+                                        <h5><span data-en="RSA Result" data-ar="نتيجة RSA">RSA Result</span></h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="result-container">
+                                            <pre id="rsa-output" class="result-output">Result will appear here</pre>
+                                        </div>
+                                        <div class="mt-3 d-flex justify-content-between">
+                                            <button id="rsa-copy-btn" class="btn btn-sm btn-outline-secondary">
+                                                <i class="ph-fill ph-copy"></i> <span data-en="Copy to Clipboard" data-ar="نسخ إلى الحافظة">Copy to Clipboard</span>
+                                            </button>
+                                            <button id="rsa-clear-btn" class="btn btn-sm btn-outline-danger">
+                                                <i class="ph-fill ph-trash"></i> <span data-en="Clear" data-ar="مسح">Clear</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card encryption-info-card">
+        <div class="card-header">
+            <h4><i class="ph-fill ph-info"></i> <span data-en="Algorithm Information" data-ar="معلومات الخوارزمية">Algorithm Information</span></h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="algorithm-info">
+                        <h5><i class="ph-fill ph-fingerprint"></i> SHA-1</h5>
+                        <ul>
+                            <li><strong>Type:</strong> Cryptographic hash function</li>
+                            <li><strong>Output:</strong> 160-bit (20-byte) hash value</li>
+                            <li><strong>Uses:</strong> Digital signatures, message integrity verification</li>
+                            <li><strong>Security:</strong> No longer considered secure against well-funded attackers</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="algorithm-info">
+                        <h5><i class="ph-fill ph-swap"></i> AES-CTR</h5>
+                        <ul>
+                            <li><strong>Type:</strong> Symmetric encryption</li>
+                            <li><strong>Key Size:</strong> 256-bit</li>
+                            <li><strong>Mode:</strong> Counter (CTR)</li>
+                            <li><strong>Uses:</strong> Confidential communication, data protection</li>
+                            <li><strong>Security:</strong> Very secure when implemented correctly</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="algorithm-info">
+                        <h5><i class="ph-fill ph-key"></i> RSA</h5>
+                        <ul>
+                            <li><strong>Type:</strong> Asymmetric encryption</li>
+                            <li><strong>Key Size:</strong> 2048-bit</li>
+                            <li><strong>Uses:</strong> Secure communication, digital signatures</li>
+                            <li><strong>Security:</strong> Relies on the difficulty of factoring large numbers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // SHA-1 functionality
+        const sha1Input = document.getElementById('sha1-input');
+        const sha1Output = document.getElementById('sha1-output');
+        const sha1HashBtn = document.getElementById('sha1-hash-btn');
+        const sha1CopyBtn = document.getElementById('sha1-copy-btn');
+        const sha1ClearBtn = document.getElementById('sha1-clear-btn');
+        
+        sha1HashBtn.addEventListener('click', function() {
+            const text = sha1Input.value.trim();
+            if (!text) {
+                showToast('Please enter text to hash', 'warning');
+                return;
+            }
+            
+            // Call the SHA-1 API
+            fetch('/api/encrypt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    algorithm: 'sha1',
+                    message: text
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showToast(data.error, 'error');
+                } else {
+                    sha1Output.textContent = data.result;
+                    animateResult(sha1Output);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            });
+        });
+        
+        sha1CopyBtn.addEventListener('click', function() {
+            copyToClipboard(sha1Output.textContent);
+        });
+        
+        sha1ClearBtn.addEventListener('click', function() {
+            sha1Input.value = '';
+            sha1Output.textContent = 'Hash will appear here';
+        });
+        
+        // CTR functionality
+        const ctrInput = document.getElementById('ctr-input');
+        const ctrOutput = document.getElementById('ctr-output');
+        const ctrKey = document.getElementById('ctr-key');
+        const ctrGenerateKeyBtn = document.getElementById('ctr-generate-key');
+        const ctrEncryptBtn = document.getElementById('ctr-encrypt-btn');
+        const ctrDecryptBtn = document.getElementById('ctr-decrypt-btn');
+        const ctrCopyBtn = document.getElementById('ctr-copy-btn');
+        const ctrClearBtn = document.getElementById('ctr-clear-btn');
+        
+        ctrGenerateKeyBtn.addEventListener('click', function() {
+            // Generate a random key (in a real app this would be a secure random key)
+            const randomKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+                .map(b => b.toString(16).padStart(2, '0')).join('');
+            ctrKey.value = randomKey;
+        });
+        
+        ctrEncryptBtn.addEventListener('click', function() {
+            const text = ctrInput.value.trim();
+            if (!text) {
+                showToast('Please enter text to encrypt', 'warning');
+                return;
+            }
+            
+            if (!ctrKey.value) {
+                // Generate a key if none exists
+                ctrGenerateKeyBtn.click();
+            }
+            
+            // Call the CTR encryption API
+            fetch('/api/encrypt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    algorithm: 'ctr',
+                    message: text
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showToast(data.error, 'error');
+                } else {
+                    ctrOutput.textContent = JSON.stringify(data.result, null, 2);
+                    ctrKey.value = data.key;
+                    animateResult(ctrOutput);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            });
+        });
+        
+        ctrDecryptBtn.addEventListener('click', function() {
+            const text = ctrInput.value.trim();
+            if (!text) {
+                showToast('Please enter encrypted data to decrypt', 'warning');
+                return;
+            }
+            
+            if (!ctrKey.value) {
+                showToast('Please provide the decryption key', 'warning');
+                return;
+            }
+            
+            // Try to parse the input as JSON
+            try {
+                const encryptedData = JSON.parse(text);
+                
+                // Call the CTR decryption API
+                fetch('/api/decrypt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        algorithm: 'ctr',
+                        encrypted: encryptedData,
+                        key: ctrKey.value
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showToast(data.error, 'error');
+                    } else {
+                        ctrOutput.textContent = data.result;
+                        animateResult(ctrOutput);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('An error occurred', 'error');
+                });
+            } catch (e) {
+                showToast('Invalid encrypted data format', 'error');
+            }
+        });
+        
+        ctrCopyBtn.addEventListener('click', function() {
+            copyToClipboard(ctrOutput.textContent);
+        });
+        
+        ctrClearBtn.addEventListener('click', function() {
+            ctrInput.value = '';
+            ctrOutput.textContent = 'Result will appear here';
+        });
+        
+        // RSA functionality
+        const rsaInput = document.getElementById('rsa-input');
+        const rsaOutput = document.getElementById('rsa-output');
+        const rsaUseMyKeys = document.getElementById('rsa-use-my-keys');
+        const rsaEncryptBtn = document.getElementById('rsa-encrypt-btn');
+        const rsaDecryptBtn = document.getElementById('rsa-decrypt-btn');
+        const rsaCopyBtn = document.getElementById('rsa-copy-btn');
+        const rsaClearBtn = document.getElementById('rsa-clear-btn');
+        
+        rsaEncryptBtn.addEventListener('click', function() {
+            const text = rsaInput.value.trim();
+            if (!text) {
+                showToast('Please enter text to encrypt', 'warning');
+                return;
+            }
+            
+            // Call the RSA encryption API
+            fetch('/api/encrypt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    algorithm: 'rsa',
+                    message: text,
+                    useMyKeys: rsaUseMyKeys.checked
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showToast(data.error, 'error');
+                } else {
+                    rsaOutput.textContent = data.result;
+                    animateResult(rsaOutput);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            });
+        });
+        
+        rsaDecryptBtn.addEventListener('click', function() {
+            const text = rsaInput.value.trim();
+            if (!text) {
+                showToast('Please enter encrypted data to decrypt', 'warning');
+                return;
+            }
+            
+            // Call the RSA decryption API
+            fetch('/api/decrypt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    algorithm: 'rsa',
+                    encrypted: text,
+                    useMyKeys: rsaUseMyKeys.checked
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showToast(data.error, 'error');
+                } else {
+                    rsaOutput.textContent = data.result;
+                    animateResult(rsaOutput);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            });
+        });
+        
+        rsaCopyBtn.addEventListener('click', function() {
+            copyToClipboard(rsaOutput.textContent);
+        });
+        
+        rsaClearBtn.addEventListener('click', function() {
+            rsaInput.value = '';
+            rsaOutput.textContent = 'Result will appear here';
+        });
+        
+        // Utility functions
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                showToast('Copied to clipboard!', 'success');
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+                showToast('Failed to copy', 'error');
+            });
+        }
+        
+        function showToast(message, type = 'info') {
+            // Create toast if it doesn't exist
+            if (!document.getElementById('toast-container')) {
+                const toastContainer = document.createElement('div');
+                toastContainer.id = 'toast-container';
+                toastContainer.className = 'position-fixed bottom-0 end-0 p-3';
+                document.body.appendChild(toastContainer);
+            }
+            
+            const toastId = 'toast-' + Date.now();
+            const toastHTML = `
+                <div id="${toastId}" class="toast align-items-center text-white bg-${type === 'error' ? 'danger' : type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'info'}" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('toast-container').insertAdjacentHTML('beforeend', toastHTML);
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+            toast.show();
+            
+            // Remove toast after it's hidden
+            toastElement.addEventListener('hidden.bs.toast', function() {
+                toastElement.remove();
+            });
+        }
+        
+        function animateResult(element) {
+            element.classList.add('animated');
+            setTimeout(() => {
+                element.classList.remove('animated');
+            }, 1000);
+        }
+    });
+</script>
+{% endblock %}

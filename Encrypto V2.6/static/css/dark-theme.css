@@ -1,0 +1,232 @@
+/* --- Dark Theme Overrides (Based on YOUR provided code with fixes) --- */
+body.dark-theme {
+    /* --- Color Palette FIXES (Key Issues) --- */
+    --bg-color: #1a1d24;          /* OK - Dark blue/gray background */
+    --bg-secondary: #282c34;       /* OK - Slightly lighter secondary */
+    --text-color: #e2e8f0;         /* FIXED: Use light gray (not pure white for better comfort) */
+    --text-secondary: #94a3b8;     /* FIXED: Use a lighter Muted Gray (Black was wrong) */
+    --border-color: #3e4c5f;       /* FIXED: More visible border than #333 */
+    --input-bg: #2d3748;           /* FIXED: Darker input background */
+    --input-color: var(--text-color); /* FIXED: Input text should be light */
+    --sidebar-bg: #1f2937;         /* OK - Slightly different dark */
+    --sidebar-text: #cbd5e1;       /* FIXED: Sidebar text should be light */
+    --sidebar-active: #6366f1;     /* OK - Keep or adjust your preferred active color */
+    --card-bg: var(--bg-secondary); /* OK - Card background matches secondary */
+    --hover-bg: rgba(255, 255, 255, 0.07); /* OK - Subtle hover */
+    --shadow-color: rgba(0, 0, 0, 0.3);   /* OK - Darker shadow */
+    --code-bg: #2d3748;            /* FIXED: Match input background for consistency */
+    --link-color: #80a5ff;         /* OK - Brighter link color */
+
+    /* Font Face - Keep your @font-face rule if used elsewhere, but applying font-family here is okay */
+    font-family: 'YourFontName', 'Poppins', sans-serif; /* Added Poppins as fallback */
+
+    /* --- Global Text FIXES --- */
+    /* Remove global text-shadow, apply selectively if needed. It reduces readability. */
+    /* text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); */
+    /* Global color is already set by --text-color variable inherited by body */
+
+    /* --- Sidebar (Seems OK, using variables) --- */
+    .sidebar {
+        box-shadow: 0 0 15px var(--shadow-color); /* Use shadow variable */
+        border-right-color: var(--border-color); /* Use border variable */
+    }
+    body[dir="rtl"] .sidebar {
+        border-left-color: var(--border-color);
+        border-right: none;
+    }
+    .sidebar-item.active a {
+        background-color: var(--sidebar-active);
+        /* Shadow color was hardcoded, use rgba with active color components if possible, or keep as is */
+        box-shadow: 0 4px 10px rgba(99, 102, 241, 0.35); /* Adjusted opacity slightly */
+        color: #ffffff; /* Ensure active text is white */
+    }
+    .sidebar-item:hover a {
+        background-color: var(--hover-bg);
+        color: var(--sidebar-active); /* Color should match active on hover */
+    }
+
+    /* --- Cards (Seems OK, using variables) --- */
+    .card {
+        box-shadow: 0 5px 15px var(--shadow-color); /* Use shadow variable */
+        border-color: var(--border-color);          /* Use border variable */
+    }
+    .card:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); /* Slightly darker hover shadow */
+        /* Optionally highlight border */
+        /* border-color: var(--sidebar-active); */
+    }
+    .card-header {
+        border-bottom-color: var(--border-color); /* Use border variable */
+    }
+
+    /* --- Form Controls (FIXES) --- */
+    .form-control, /* Apply base dark styles to both */
+    .form-select {
+        background-color: var(--input-bg);
+        color: var(--input-color); /* Should be light text */
+        border: 1px solid var(--border-color);
+    }
+    .form-control::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.6;
+    }
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--sidebar-active); /* Use active color */
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.3); /* Active color focus */
+        background-color: var(--input-bg); /* Keep background dark on focus */
+        color: var(--input-color);         /* Keep text light on focus */
+    }
+    .form-select { /* Arrow color fix */
+         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); /* Use text-secondary for arrow */
+    }
+    /* Remove the specific .language-selector rule at the end - it conflicts */
+
+    /* --- Buttons (Ensure consistency) --- */
+    .btn-primary {
+        background-color: var(--sidebar-active); /* Match active color */
+        border-color: var(--sidebar-active);
+        color: #ffffff; /* Ensure white text */
+    }
+    .btn-primary:hover {
+        background-color: #4f46e5; /* Slightly darker shade */
+        border-color: #4f46e5;
+    }
+    .btn-secondary { /* Improved secondary */
+        background-color: #4a5568;
+        border-color: #4a5568;
+        color: var(--text-color);
+    }
+    .btn-secondary:hover {
+        background-color: #5a6578;
+        border-color: #5a6578;
+    }
+     .btn-warning { color: #1a202c; } /* Dark text on yellow */
+     .btn-info { color: #ffffff; } /* Ensure white text on info */
+
+    /* --- Content Elements (FIXES) --- */
+    .result-output {
+        background-color: var(--code-bg);
+        color: var(--text-color);
+        border-color: var(--border-color); /* Use variable */
+    }
+
+    .message-bubble { /* Incoming */
+        background-color: var(--bg-secondary); /* Use secondary background */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        color: var(--text-color); /* Ensure light text */
+    }
+
+    .message-container.outgoing .message-bubble {
+        background-color: var(--sidebar-active);
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        color: #ffffff; /* Ensure white text */
+    }
+
+    .system-message-content {
+        background-color: #2a2a2a;
+        color: var(--text-secondary); /* FIXED: Use secondary text, not white */
+    }
+
+    /* --- Navigation Elements (Seems OK) --- */
+    .dropdown-menu {
+        background-color: var(--bg-secondary);
+        border-color: var(--border-color);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.25); /* Slightly softer shadow */
+    }
+    .dropdown-item {
+        color: var(--text-color);
+    }
+    .dropdown-item:hover, .dropdown-item:focus {
+        background-color: var(--hover-bg);
+        color: var(--text-color); /* Keep text color on hover */
+    }
+    .nav-tabs .nav-link {
+        color: var(--text-secondary);
+        border-color: transparent; /* Let parent border show */
+    }
+    .nav-tabs .nav-link.active {
+        color: var(--sidebar-active);
+        background-color: var(--bg-color); /* Match main background */
+        border-color: var(--border-color) var(--border-color) var(--bg-color); /* Blend bottom */
+    }
+
+    /* --- Feature Cards (Seems OK) --- */
+    .feature-card {
+        background-color: var(--bg-secondary); /* Use secondary background */
+    }
+    .feature-icon {
+        color: var(--sidebar-active); /* Use active color */
+    }
+    .welcome-card,
+    .security-status-card,
+    .profile-card,
+    .algorithm-card {
+        background-color: var(--card-bg); /* Use variable */
+    }
+
+    /* --- Tables (Seems OK) --- */
+    .table {
+        color: var(--text-color);
+        --bs-table-border-color: var(--border-color); /* Use Bootstrap 5.3 variable */
+    }
+    .table th, .table td { border-color: var(--border-color); }
+    .table thead th {
+         background-color: var(--bg-secondary);
+         color: var(--text-secondary);
+         border-bottom-color: var(--border-color);
+    }
+     .table-hover tbody tr:hover {
+        background-color: var(--hover-bg);
+        color: var(--text-color);
+    }
+
+
+    /* --- Scrollbars (Seems OK) --- */
+    /* Keep your scrollbar styles */
+
+    /* --- Selection (Seems OK) --- */
+    ::selection {
+        background-color: rgba(99, 102, 241, 0.3);
+        color: var(--text-color);
+    }
+
+    /* --- Alerts (FIXES for contrast) --- */
+    .alert { border-radius: var(--border-radius-md); } /* Add radius */
+    .alert-success { background-color: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.25); color: #a7f3d0; } /* Lighter text */
+    .alert-warning { background-color: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.25); color: #fde68a; } /* Lighter text */
+    .alert-danger { background-color: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.25); color: #fecaca; } /* Lighter text */
+    .alert-info { background-color: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.25); color: #bfdbfe; } /* Lighter text */
+    /* Ensure close buttons are visible */
+    .alert .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+
+
+    /* --- Authentication Pages (Seems OK) --- */
+    .auth-card {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    /* --- Modals (Seems OK) --- */
+    .modal-content {
+        background-color: var(--bg-secondary);
+        border-color: var(--border-color); /* Use variable */
+        color: var(--text-color);
+    }
+    .modal-header, .modal-footer { border-color: var(--border-color); }
+    .modal-header .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+
+
+    /* --- Settings Page (Seems OK) --- */
+    .theme-option.dark-theme .theme-preview {
+        border-color: var(--sidebar-active);
+    }
+
+    /* --- Profile Email Fix --- */
+    .profile-card .profile-email,
+    .profile-card .text-muted {
+        color: var(--text-secondary) !important; /* Use the corrected --text-secondary */
+    }
+
+    /* Remove the incorrect .language-selector rule you added at the end */
+
+} /* End of body.dark-theme */

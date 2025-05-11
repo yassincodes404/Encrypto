@@ -1,0 +1,545 @@
+--- START OF FILE about.html ---
+
+{% extends "base.html" %}
+
+{% block title %}About Us - Secure Encryption Portal{% endblock %}
+{% block page_title %}About Us{% endblock %}
+
+{% block extra_css %}
+{# تأكد من ربط Font Awesome (بما في ذلك أيقونات Brands) في ملف base.html #}
+{# مثال: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> #}
+<style>
+    /* --- تنسيقات الفريق والصور --- */
+
+    /* تنسيق الصورة الجماعية */
+    .team-group-photo {
+        max-width: 90%; height: auto; display: block; margin: 0 auto 35px auto;
+        border-radius: 12px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    }
+    body.dark-theme .team-group-photo { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); }
+
+    /* تنسيقات بطاقة العضو وتأثير الـ Hover */
+    .team-member {
+        padding: 20px 15px; border-radius: 10px; background-color: var(--card-bg);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08); height: 100%; display: flex;
+        flex-direction: column; align-items: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+    body.dark-theme .team-member {
+        background-color: var(--bg-secondary); box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .team-member:hover {
+        transform: translateY(-6px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+    body.dark-theme .team-member:hover { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45); }
+
+    /* تنسيق حاوية صورة العضو (الأفاتار الدائري) */
+    .member-avatar {
+        width: 100px; height: 100px; margin: 0 auto 15px; border-radius: 50%;
+        overflow: hidden; background-color: var(--gray-200);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); position: relative; flex-shrink: 0;
+    }
+    body.dark-theme .member-avatar { background-color: var(--input-bg); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+
+    /* تنسيق الصورة داخل الأفاتار */
+    .member-avatar img.member-photo { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+
+    /* تنسيق معلومات العضو */
+    .member-info { text-align: center; flex-grow: 1; }
+    .member-name-link { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; } /* زيادة المسافة السفلية قليلاً */
+    .member-name-link h6 { margin-bottom: 0; text-align: center; font-size: 0.95rem; }
+    .linkedin-icon { color: #0077B5; font-size: 1.1rem; transition: color 0.3s ease, transform 0.3s ease; display: inline-block; }
+    .linkedin-icon:hover { color: #0e76a8; transform: scale(1.1); }
+    body.dark-theme .linkedin-icon { color: #00A0DC; }
+    body.dark-theme .linkedin-icon:hover { color: #1DB7ED; }
+    /* تم حذف .member-role */
+
+    /* --- باقي التنسيقات --- */
+     .tech-stack { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 10px; }
+    .tech-item { display: flex; flex-direction: column; align-items: center; text-align: center; width: 90px; }
+    .tech-icon { font-size: 2rem; color: var(--primary-color); margin-bottom: 5px; }
+    body.dark-theme .tech-icon { color: var(--sidebar-active); }
+    .tech-name { font-size: 0.8rem; color: var(--text-secondary); }
+    .feature-list { list-style: none; padding-left: 0; }
+    .feature-list li { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 15px; }
+    .feature-icon { font-size: 1.5rem; color: var(--primary-color); margin-top: 3px; }
+    body.dark-theme .feature-icon { color: var(--sidebar-active); }
+    .feature-details h6 { margin-bottom: 3px; }
+    .feature-details p { margin-bottom: 0; color: var(--text-secondary); font-size: 0.95rem; }
+    .security-list { list-style: none; padding-left: 0; }
+    .security-list li { margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .security-list i { color: var(--success-color); font-size: 1.1rem; }
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="about-container">
+    <div class="card about-card">
+        <div class="card-header">
+            <h4><i class="ph-fill ph-info"></i> <span data-en="About This Project" data-ar="حول هذا المشروع">About This Project</span></h4>
+        </div>
+        <div class="card-body">
+
+            <!-- الصورة الجماعية -->
+            <img src="{{ url_for('static', filename='images/group_photo.jpg') }}"
+                 alt="Encrypto Development Team Group Photo"
+                 class="team-group-photo">
+
+            <div class="about-section">
+                <div class="section-header">
+                    <h5><i class="ph-fill ph-brackets-curly"></i> <span data-en="Project Overview" data-ar="نظرة عامة على المشروع">Project Overview</span></h5>
+                </div>
+                <div class="section-content">
+                    <p><span data-en="Encrypto is a secure web application focused on providing robust cryptographic tools. It aims to facilitate secure communication and data protection through user-friendly interfaces backed by industry-standard encryption algorithms and security protocols, ensuring data privacy and integrity." data-ar="إنكريبتو هو تطبيق ويب آمن يركز على توفير أدوات تشفير قوية. يهدف إلى تسهيل الاتصال الآمن وحماية البيانات من خلال واجهات سهلة الاستخدام مدعومة بخوارزميات تشفير ومعايير أمان صناعية، مما يضمن خصوصية البيانات وسلامتها.">
+                        Encrypto is a secure web application focused on providing robust cryptographic tools. It aims to facilitate secure communication and data protection through user-friendly interfaces backed by industry-standard encryption algorithms and security protocols, ensuring data privacy and integrity.
+                    </span></p>
+                </div>
+            </div>
+
+            <div class="about-section">
+                <div class="section-header">
+                    <h5><i class="ph-fill ph-key"></i> <span data-en="Key Features" data-ar="الميزات الرئيسية">Key Features</span></h5>
+                </div>
+                <div class="section-content">
+                    <ul class="feature-list">
+                        <li>
+                            <span class="feature-icon"><i class="ph-fill ph-lock-key"></i></span>
+                            <div class="feature-details">
+                                <h6><span data-en="Advanced Encryption Tools" data-ar="أدوات تشفير متقدمة">Advanced Encryption Tools</span></h6>
+                                <p><span data-en="Interactive tools for SHA-1 hashing, AES-CTR symmetric encryption, and RSA asymmetric encryption." data-ar="أدوات تفاعلية لتجزئة SHA-1، والتشفير المتماثل AES-CTR، والتشفير غير المتماثل RSA.">Interactive tools for SHA-1 hashing, AES-CTR symmetric encryption, and RSA asymmetric encryption.</span></p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon"><i class="ph-fill ph-chat-circle-dots"></i></span>
+                            <div class="feature-details">
+                                <h6><span data-en="Secure Real-time Chat" data-ar="دردشة آمنة فورية">Secure Real-time Chat</span></h6>
+                                <p><span data-en="Encrypted messaging using AES-CTR with digital signatures (RSA-SHA1) for authenticity and integrity." data-ar="مراسلة مشفرة باستخدام AES-CTR مع توقيعات رقمية (RSA-SHA1) للتحقق من الأصالة والسلامة.">Encrypted messaging using AES-CTR with digital signatures (RSA-SHA1) for authenticity and integrity.</span></p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon"><i class="ph-fill ph-user-circle-gear"></i></span>
+                            <div class="feature-details">
+                                <h6><span data-en="User Account Management" data-ar="إدارة حساب المستخدم">User Account Management</span></h6>
+                                <p><span data-en="Secure registration and login with password hashing. Users have profiles with associated RSA key pairs." data-ar="تسجيل وتسجيل دخول آمن مع تجزئة كلمات المرور. يمتلك المستخدمون ملفات شخصية مع أزواج مفاتيح RSA مرتبطة بها.">Secure registration and login with password hashing. Users have profiles with associated RSA key pairs.</span></p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon"><i class="ph-fill ph-translate"></i></span>
+                            <div class="feature-details">
+                                <h6><span data-en="Multi-language Interface" data-ar="واجهة متعددة اللغات">Multi-language Interface</span></h6>
+                                <p><span data-en="Support for English and Arabic, adapting layout direction (LTR/RTL) accordingly." data-ar="دعم اللغتين الإنجليزية والعربية، مع تكييف اتجاه التنسيق (LTR/RTL) وفقًا لذلك.">Support for English and Arabic, adapting layout direction (LTR/RTL) accordingly.</span></p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="feature-icon"><i class="ph-fill ph-moon-stars"></i></span>
+                            <div class="feature-details">
+                                <h6><span data-en="Customizable Theme" data-ar="مظهر قابل للتخصيص">Customizable Theme</span></h6>
+                                <p><span data-en="User-selectable light and dark themes for personalized visual experience." data-ar="سمات فاتحة وداكنة يمكن للمستخدم اختيارها لتجربة بصرية مخصصة.">User-selectable light and dark themes for personalized visual experience.</span></p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="about-section">
+                <div class="section-header">
+                    <h5><i class="ph-fill ph-shield"></i> <span data-en="Security Implementation Details" data-ar="تفاصيل تنفيذ الأمان">Security Implementation Details</span></h5>
+                </div>
+                <div class="section-content">
+                    <p><span data-en="Security is a core aspect of Encrypto. Key measures include:" data-ar="الأمان هو جانب أساسي في إنكريبتو. تشمل الإجراءات الرئيسية:">Security is a core aspect of Encrypto. Key measures include:</span></p>
+                    <ul class="security-list">
+                        <li><i class="ph-fill ph-lock-simple"></i> <span data-en="Password Hashing: Using Werkzeug's `generate_password_hash` for secure password storage." data-ar="تجزئة كلمة المرور: استخدام `generate_password_hash` من Werkzeug لتخزين آمن لكلمات المرور.">Password Hashing: Using Werkzeug's `generate_password_hash` for secure password storage.</span></li>
+                        <li><i class="ph-fill ph-key"></i> <span data-en="RSA Key Pairs: Each user gets a 2048-bit RSA key pair upon registration for encryption and digital signatures." data-ar="أزواج مفاتيح RSA: يحصل كل مستخدم على زوج مفاتيح RSA بحجم 2048 بت عند التسجيل للتشفير والتوقيعات الرقمية.">RSA Key Pairs: Each user gets a 2048-bit RSA key pair upon registration for encryption and digital signatures.</span></li>
+                        <li><i class="ph-fill ph-signature"></i> <span data-en="Digital Signatures: Messages are signed with the sender's private RSA key and SHA-1 hash for authenticity verification." data-ar="التوقيعات الرقمية: يتم توقيع الرسائل بمفتاح RSA الخاص بالمرسل وتجزئة SHA-1 للتحقق من الأصالة.">Digital Signatures: Messages are signed with the sender's private RSA key and SHA-1 hash for authenticity verification.</span></li>
+                        <li><i class="ph-fill ph-swap"></i> <span data-en="Symmetric Encryption (Chat): AES-256 in CTR mode used for message content encryption in chat (Note: Hybrid encryption approach is ideal for general data)." data-ar="التشفير المتماثل (الدردشة): يستخدم AES-256 في وضع CTR لتشفير محتوى الرسائل في الدردشة (ملاحظة: نهج التشفير الهجين مثالي للبيانات العامة).">Symmetric Encryption (Chat): AES-256 in CTR mode used for message content encryption in chat (Note: Hybrid encryption approach is ideal for general data).</span></li>
+                        <li><i class="ph-fill ph-session"></i> <span data-en="Session Management: Flask-Login handles secure user sessions." data-ar="إدارة الجلسات: يتولى Flask-Login إدارة جلسات المستخدم الآمنة.">Session Management: Flask-Login handles secure user sessions.</span></li>
+                         <li><i class="ph-fill ph-shield-warning"></i> <span data-en="CSRF Protection (Implied): Flask-WTF or similar mechanisms are recommended for forms (not explicitly shown here)." data-ar="الحماية من CSRF (ضمنية): يوصى باستخدام Flask-WTF أو آليات مماثلة للنماذج (غير معروضة بوضوح هنا).">CSRF Protection (Implied): Flask-WTF or similar mechanisms are recommended for forms (not explicitly shown here).</span></li>
+                    </ul>
+                    <p class="mt-2"><small><span data-en="Note: While SHA-1 is used for demonstration in signatures, stronger hash functions like SHA-256 are recommended for new production systems." data-ar="ملاحظة: بينما يستخدم SHA-1 للعرض في التوقيعات، يوصى باستخدام دوال تجزئة أقوى مثل SHA-256 للأنظمة الإنتاجية الجديدة.">Note: While SHA-1 is used for demonstration in signatures, stronger hash functions like SHA-256 are recommended for new production systems.</span></small></p>
+                </div>
+            </div>
+
+            <div class="about-section">
+                <div class="section-header">
+                    <h5><i class="ph-fill ph-code"></i> <span data-en="Core Technologies" data-ar="التقنيات الأساسية">Core Technologies</span></h5>
+                </div>
+                <div class="section-content">
+                    <div class="tech-stack">
+                        <div class="tech-item">
+                            <span class="tech-icon"><i class="ph-fill ph-flask"></i></span>
+                            <span class="tech-name">Flask</span>
+                        </div>
+                         <div class="tech-item">
+                            <span class="tech-icon"><i class="fa-brands fa-python" style="color: #3776AB;"></i></span>
+                            <span class="tech-name">Python</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-icon"><i class="ph-fill ph-database"></i></span>
+                            <span class="tech-name">SQLAlchemy</span>
+                        </div>
+                         <div class="tech-item">
+                            <span class="tech-icon"><i class="fa-solid fa-database" style="color: #003B57;"></i></span>
+                            <span class="tech-name">SQLite</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-icon"><i class="ph-fill ph-broadcast"></i></span>
+                            <span class="tech-name">Socket.IO</span>
+                        </div>
+                         <div class="tech-item">
+                            <span class="tech-icon"><i class="fa-brands fa-html5" style="color: #E34F26;"></i></span>
+                            <span class="tech-name">HTML5</span>
+                        </div>
+                         <div class="tech-item">
+                            <span class="tech-icon"><i class="fa-brands fa-css3-alt" style="color: #1572B6;"></i></span>
+                            <span class="tech-name">CSS3</span>
+                        </div>
+                         <div class="tech-item">
+                            <span class="tech-icon"><i class="fa-brands fa-js" style="color: #F7DF1E;"></i></span>
+                            <span class="tech-name">JavaScript</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-icon"><i class="fa-brands fa-bootstrap" style="color: #7952B3;"></i></span>
+                            <span class="tech-name">Bootstrap</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-icon"><i class="ph-fill ph-key-return"></i></span>
+                            <span class="tech-name">PyCryptodome</span>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-icon"><i class="ph-fill ph-layout"></i></span>
+                            <span class="tech-name">Jinja2</span>
+                        </div>
+                         <div class="tech-item">
+                            <span class="tech-icon"><i class="fa-brands fa-font-awesome" style="color: #528DD7;"></i></span>
+                            <span class="tech-name">Font Awesome</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <div class="about-section">
+                <div class="section-header">
+                    <h5><i class="ph-fill ph-users-three"></i> <span data-en="Development Team" data-ar="فريق التطوير">Development Team</span></h5>
+                </div>
+                <div class="section-content">
+                    <div class="team-members row justify-content-center">
+
+                        {# --- العضو 1: Suhail --- #}
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                    <img src="{{ url_for('static', filename='images/team1.jpg') }}" alt="Photo of Suhail Al-Saeed Al-Akhdar" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                    <div class="member-name-link">
+                                        <h6>Suhail Al-Saeed Al-Akhdar</h6>
+                                        <a href="https://www.linkedin.com/in/sohail-alakhdar-b74990333?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer" aria-label="Suhail Al-Saeed Al-Akhdar LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- العضو 2: Karim --- #}
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                           <div class="team-member">
+                                <div class="member-avatar">
+                                    <img src="{{ url_for('static', filename='images/team2.jpg') }}" alt="Photo of Karim Ahmed Fouad Ahmed" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>Kareem Ahmed Fouad Ahmed</h6>
+                                         <a href="https://www.linkedin.com/in/kareem-ahmed-94b49b334?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noopener noreferrer" aria-label="Karim Ahmed Fouad Ahmed LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                                     
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- العضو 3: Abdullah --- #}
+                         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                             <div class="team-member">
+                                <div class="member-avatar">
+                                     <img src="{{ url_for('static', filename='images/team3.jpg') }}" alt="Photo of Abdullah Ashraf El-Sabbahy" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>Abdullah Ashraf Al-Sabahy</h6>
+                                         <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Abdullah Ashraf El-Sabbahy LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- العضو 4: Mohamed Essam --- #}
+                         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                           <div class="team-member">
+                                <div class="member-avatar">
+                                     <img src="{{ url_for('static', filename='images/team4.jpg') }}" alt="Photo of Mohamed Essam Mahmoud Saber" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>Mohamed Essam Mahmoud Saber</h6>
+                                         <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Mohamed Essam Mahmoud Saber LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                             
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- العضو 5: Mahmoud Ibrahim --- #}
+                         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                    <img src="{{ url_for('static', filename='images/team5.jpg') }}" alt="Photo of Mahmoud Ibrahim Mohamed" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>Mahmoud Ibrahim Mohamed</h6>
+                                         <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Mahmoud Ibrahim Mohamed LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                               
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- العضو 6: Mahmoud Wael --- #}
+                         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                             <div class="team-member">
+                                <div class="member-avatar">
+                                    <img src="{{ url_for('static', filename='images/team6.jpg') }}" alt="Photo of Mahmoud Wael Mahmoud Ali" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>Mahmoud Wael Mahmoud Ali</h6>
+                                         <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Mahmoud Wael Mahmoud Ali LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                                  
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- العضو 7: Mina --- #}
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                           <div class="team-member">
+                                <div class="member-avatar">
+                                    <img src="{{ url_for('static', filename='images/team7.jpg') }}" alt="Photo of Mina Samih Raouf Kamal" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>Mina Samih Raouf Kamal</h6>
+                                         <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Mina Samih Raouf Kamal LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                        
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- العضو 8: Yahya --- #}
+                         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                     <img src="{{ url_for('static', filename='images/team8.jpg') }}" alt="Photo of Yahya Essam Yahya Abdelrahman" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>Yahya Essam Yahya Abdelrahman</h6>
+                                         <a href="https://www.linkedin.com/in/yahya-hamzawy-10139b29a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noopener noreferrer" aria-label="Yahya Essam Yahya Abdelrahman LinkedIn Profile"> {# <-- مثال لرابط مضاف #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                                     
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- العضو 9: Youssef Behensi --- #}
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                           <div class="team-member">
+                                <div class="member-avatar">
+                                    <img src="{{ url_for('static', filename='images/team9.jpg') }}" alt="Photo of Youssef Mohamed Behensi" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>Youssef Mohamed Bahnasy</h6>
+                                         <a href="http://instagram.com/youssefelshablol" target="_blank" rel="noopener noreferrer" aria-label="Youssef Mohamed Behensi LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                          
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- العضو 10: Youssef Hany --- #}
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                           <div class="team-member">
+                                <div class="member-avatar">
+                                    <img src="{{ url_for('static', filename='images/team10.jpg') }}" alt="Photo of Youssef Hany Mohamed" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>Youssef Hany Mohamed</h6>
+                                         <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Youssef Hany Mohamed LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                   
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- العضو 11: Hassan --- #}
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                           <div class="team-member">
+                                <div class="member-avatar">
+                                    <img src="{{ url_for('static', filename='images/team11.jpg') }}" alt="Photo of Hassan Ahmed Amin Hassan" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>Hassan Ahmed Amin Hassan</h6>
+                                         <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Hassan Ahmed Amin Hassan LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                         
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- العضو 12: Abdelhamid --- #}
+                         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                     <img src="{{ url_for('static', filename='images/team12.jpg') }}" alt="Photo of Abdelhamid Khaled" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>Abdelhamid Khaled</h6>
+                                         <a href="https://www.linkedin.com/in/abdelhamid-khald-4782462a4/" target="_blank" rel="noopener noreferrer" aria-label="Abdelhamid Khaled LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                                 
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- العضو 13: Youssef Karem --- #}
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                             <div class="team-member">
+                                <div class="member-avatar">
+                                    <img src="{{ url_for('static', filename='images/team13.jpg') }}" alt="Photo of Youssef Karem Youssef" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>Youssef Karem Youssef</h6>
+                                         <a href="https://www.linkedin.com/in/youssef-kaarem-306a94325?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noopener noreferrer" aria-label="Youssef Karem Youssef LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- العضو 14: Yassin --- #}
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                           <div class="team-member">
+                                <div class="member-avatar">
+                                     <img src="{{ url_for('static', filename='images/team14.jpg') }}" alt="Photo of Yassin Tarek Mohamed" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>Yassin Tarek Mohamed</h6>
+                                         <a href="https://www.linkedin.com/in/yassin-tarek-44a85a35b" target="_blank" rel="noopener noreferrer" aria-label="Yassin Tarek Mohamed LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                                     
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- العضو 15: Youssef Ismail --- #}
+                         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                    <img src="{{ url_for('static', filename='images/team15.jpg') }}" alt="Photo of Youssef Mohamed Ismail" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>Youssef Mohamed Ismail</h6>
+                                         <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Youssef Mohamed Ismail LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                                
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                    <img src="{{ url_for('static', filename='images/team16.jpg') }}" alt="Photo of Youssef Mohamed Ismail" class="member-photo">
+                                </div>
+                                <div class="member-info">
+                                     <div class="member-name-link">
+                                        <h6>El sheekh Mahoraga</h6>
+                                         <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Youssef Mohamed Ismail LinkedIn Profile"> {# <-- رابط LinkedIn #}
+                                            <i class="fa-brands fa-linkedin linkedin-icon"></i>
+                                        </a>
+                                    </div>
+                                
+                                </div>
+                            </div>
+                        </div>
+
+                        {# --- نهاية أعضاء الفريق --- #}
+
+                    </div> {# نهاية صف أعضاء الفريق #}
+                </div>
+            </div>
+
+
+            <div class="about-section">
+                <div class="section-header">
+                    <h5><i class="ph-fill ph-lightbulb"></i> <span data-en="Future Enhancements" data-ar="التحسينات المستقبلية">Future Enhancements</span></h5>
+                </div>
+                <div class="section-content">
+                    <p><span data-en="We are continuously working to improve Encrypto. Potential future features include:" data-ar="نحن نعمل باستمرار على تحسين إنكريبتو. تشمل الميزات المستقبلية المحتملة:">We are continuously working to improve Encrypto. Potential future features include:</span></p>
+                    <ul class="security-list"> {# إعادة استخدام تنسيق قائمة الأمان للتناسق #}
+                        <li><i class="ph-fill ph-shield-plus"></i> <span data-en="Two-Factor Authentication (2FA)" data-ar="المصادقة الثنائية (2FA)">Two-Factor Authentication (2FA)</span></li>
+                        <li><i class="ph-fill ph-upload-simple"></i> <span data-en="Secure Encrypted File Storage/Sharing" data-ar="تخزين/مشاركة الملفات المشفرة بشكل آمن">Secure Encrypted File Storage/Sharing</span></li>
+                        <li><i class="ph-fill ph-key-return"></i> <span data-en="Integration of More Cryptographic Algorithms (e.g., SHA-256)" data-ar="دمج خوارزميات تشفير إضافية (مثل SHA-256)">Integration of More Cryptographic Algorithms (e.g., SHA-256)</span></li>
+                        <li><i class="ph-fill ph-users"></i> <span data-en="Private Chat Rooms or Direct Messaging" data-ar="غرف دردشة خاصة أو رسائل مباشرة">Private Chat Rooms or Direct Messaging</span></li>
+                        <li><i class="ph-fill ph-translate"></i> <span data-en="Expanded Language Support" data-ar="توسيع دعم اللغات">Expanded Language Support</span></li>
+                         <li><i class="ph-fill ph-arrow-clockwise"></i><a href="https://youtu.be/dQw4w9WgXcQ?si=qJhhMDnrmWkaxagg" data-en="User-Initiated RSA Key Regeneration" data-ar="إعادة إنشاء مفاتيح RSA بواسطة المستخدم">User-Initiated RSA Key Regeneration</a></li>
+                         
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+--- END OF FILE about.html ---

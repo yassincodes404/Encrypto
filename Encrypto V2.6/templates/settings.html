@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - Secure Encryption Portal{% endblock %}
+{% block page_title %}Settings{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <div class="card settings-card">
+        <div class="card-header">
+            <h4><i class="ph-fill ph-gear-six"></i> <span data-en="User Settings" data-ar="إعدادات المستخدم">User Settings</span></h4>
+        </div>
+        <div class="card-body">
+            <div class="settings-section">
+                <h5><i class="ph-fill ph-globe"></i> <span data-en="Language" data-ar="اللغة">Language</span></h5>
+                <div class="setting-item" id="language-setting">
+                    <div class="setting-description">
+                        <p><span data-en="Change the application display language" data-ar="تغيير لغة عرض التطبيق">Change the application display language</span></p>
+                    </div>
+                    <div class="setting-control">
+                        <select class="form-select" id="language-select">
+                            <option value="en" {% if settings.language == 'en' %}selected{% endif %}>English</option>
+                            <option value="ar" {% if settings.language == 'ar' %}selected{% endif %}>العربية (Arabic)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h5><i class="ph-fill ph-palette"></i> <span data-en="Theme" data-ar="المظهر">Theme</span></h5>
+                <div class="setting-item" id="theme-setting">
+                    <div class="setting-description">
+                        <p><span data-en="Choose between light and dark themes" data-ar="اختر بين المظهر الفاتح والمظهر الداكن">Choose between light and dark themes</span></p>
+                    </div>
+                    <div class="setting-control">
+                        <div class="theme-selector">
+                            <label class="theme-option light-theme {% if settings.theme == 'light' %}active{% endif %}">
+                                <input type="radio" name="theme" value="light" {% if settings.theme == 'light' %}checked{% endif %}>
+                                <div class="theme-preview">
+                                    <div class="theme-header"></div>
+                                    <div class="theme-body"></div>
+                                </div>
+                                <span>Light</span>
+                            </label>
+                            <label class="theme-option dark-theme {% if settings.theme == 'dark' %}active{% endif %}">
+                                <input type="radio" name="theme" value="dark" {% if settings.theme == 'dark' %}checked{% endif %}>
+                                <div class="theme-preview">
+                                    <div class="theme-header"></div>
+                                    <div class="theme-body"></div>
+                                </div>
+                                <span>Dark</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h5><i class="ph-fill ph-bell"></i> <span data-en="Notifications" data-ar="الإشعارات">Notifications</span></h5>
+                <div class="setting-item" id="notifications-setting">
+                    <div class="setting-description">
+                        <p><span data-en="Enable or disable system notifications" data-ar="تمكين أو تعطيل إشعارات النظام">Enable or disable system notifications</span></p>
+                    </div>
+                    <div class="setting-control">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="notifications-toggle" {% if settings.notifications %}checked{% endif %}>
+                            <label class="form-check-label" for="notifications-toggle">
+                                <span data-en="Enable notifications" data-ar="تمكين الإشعارات">Enable notifications</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h5><i class="ph-fill ph-shield"></i> <span data-en="Security" data-ar="الأمان">Security</span></h5>
+                <div class="setting-item" id="session-timeout-setting">
+                    <div class="setting-description">
+                        <p><span data-en="Set the session timeout duration" data-ar="تعيين مدة انتهاء الجلسة">Set the session timeout duration</span></p>
+                    </div>
+                    <div class="setting-control">
+                        <select class="form-select" id="session-timeout-select">
+                            <option value="15">15 minutes</option>
+                            <option value="30" selected>30 minutes</option>
+                            <option value="60">1 hour</option>
+                            <option value="120">2 hours</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="setting-item" id="two-factor-setting">
+                    <div class="setting-description">
+                        <p><span data-en="Two-factor authentication (Coming Soon)" data-ar="المصادقة الثنائية (قريبًا)">Two-factor authentication (Coming Soon)</span></p>
+                    </div>
+                    <div class="setting-control">
+                        <button class="btn btn-sm btn-outline-primary" disabled>
+                            <span data-en="Enable" data-ar="تمكين">Enable</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-actions">
+                <button id="save-settings" class="btn btn-primary">
+                    <i class="ph-fill ph-floppy-disk"></i> <span data-en="Save Settings" data-ar="حفظ الإعدادات">Save Settings</span>
+                </button>
+                <button id="reset-settings" class="btn btn-outline-secondary">
+                    <i class="ph-fill ph-arrow-counter-clockwise"></i> <span data-en="Reset to Default" data-ar="إعادة تعيين إلى الافتراضي">Reset to Default</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const languageSelect = document.getElementById('language-select');
+        const themeOptions = document.querySelectorAll('input[name="theme"]');
+        const notificationsToggle = document.getElementById('notifications-toggle');
+        const saveSettingsBtn = document.getElementById('save-settings');
+        const resetSettingsBtn = document.getElementById('reset-settings');
+        
+        // Store original settings for reset functionality
+        const originalSettings = {
+            language: '{{ settings.language }}',
+            theme: '{{ settings.theme }}',
+            notifications: {{ 'true' if settings.notifications else 'false' }}
+        };
+        
+        // Apply language immediately when changed
+        languageSelect.addEventListener('change', function() {
+            applyLanguage(this.value);
+        });
+        
+        // Apply theme immediately when changed
+        themeOptions.forEach(option => {
+            option.addEventListener('change', function() {
+                if (this.checked) {
+                    applyTheme(this.value);
+                    
+                    // Update active class on theme options
+                    document.querySelectorAll('.theme-option').forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    this.closest('.theme-option').classList.add('active');
+                }
+            });
+        });
+        
+        // Save settings
+        saveSettingsBtn.addEventListener('click', function() {
+            const settings = {
+                language: languageSelect.value,
+                theme: document.querySelector('input[name="theme"]:checked').value,
+                notifications: notificationsToggle.checked
+            };
+            
+            // Call API to save settings
+            fetch('/api/settings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(settings),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Settings saved successfully', 'success');
+                } else {
+                    showToast('Failed to save settings', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            });
+        });
+        
+        // Reset settings to default
+        resetSettingsBtn.addEventListener('click', function() {
+            // Reset language
+            languageSelect.value = originalSettings.language;
+            applyLanguage(originalSettings.language);
+            
+            // Reset theme
+            const defaultThemeOption = document.querySelector(`input[name="theme"][value="${originalSettings.theme}"]`);
+            defaultThemeOption.checked = true;
+            applyTheme(originalSettings.theme);
+            
+            // Update active class on theme options
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            defaultThemeOption.closest('.theme-option').classList.add('active');
+            
+            // Reset notifications
+            notificationsToggle.checked = originalSettings.notifications === 'true';
+            
+            showToast('Settings reset to original values', 'info');
+        });
+        
+        // Apply language function
+        function applyLanguage(lang) {
+            document.body.setAttribute('data-language', lang);
+            
+            // Update all language-specific elements
+            const elements = document.querySelectorAll('[data-en], [data-ar]');
+            elements.forEach(el => {
+                if (el.hasAttribute(`data-${lang}`)) {
+                    el.textContent = el.getAttribute(`data-${lang}`);
+                }
+            });
+            
+            // Handle RTL layout for Arabic
+            if (lang === 'ar') {
+                document.body.setAttribute('dir', 'rtl');
+                document.querySelectorAll('select, input').forEach(input => {
+                    input.classList.add('rtl-input');
+                });
+            } else {
+                document.body.removeAttribute('dir');
+                document.querySelectorAll('select, input').forEach(input => {
+                    input.classList.remove('rtl-input');
+                });
+            }
+        }
+        
+        // Apply theme function
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+            }
+        }
+        
+        // Toast notification function
+        function showToast(message, type = 'info') {
+            // Create toast if it doesn't exist
+            if (!document.getElementById('toast-container')) {
+                const toastContainer = document.createElement('div');
+                toastContainer.id = 'toast-container';
+                toastContainer.className = 'position-fixed bottom-0 end-0 p-3';
+                document.body.appendChild(toastContainer);
+            }
+            
+            const toastId = 'toast-' + Date.now();
+            const toastHTML = `
+                <div id="${toastId}" class="toast align-items-center text-white bg-${type === 'error' ? 'danger' : type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'info'}" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('toast-container').insertAdjacentHTML('beforeend', toastHTML);
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+            toast.show();
+            
+            // Remove toast after it's hidden
+            toastElement.addEventListener('hidden.bs.toast', function() {
+                toastElement.remove();
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<!-- تم تعديل اللغة والاتجاه بناءً على script.js -->
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- سيتم تحديث العنوان بواسطة script.js -->
+    <title data-translate="page_title">Login / Register</title>
+    <!-- تحديث مسار CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth_standalone.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="body-container">
+        <div class="controls-container">
+            <!-- الأزرار كما هي -->
+            <button id="lang-toggle" class="control-button" aria-label="Toggle Language">EN</button>
+            <button id="theme-toggle" class="control-button" aria-label="Switch to dark mode">
+                <i id="theme-icon" class="fa-solid fa-sun"></i>
+            </button>
+        </div>
+
+        <!-- قسم رسائل Flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="auth-flash-messages" style="margin-bottom: 15px; padding: 10px; border-radius: 5px; text-align: center;">
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category or 'info' }}" role="alert" style="color: {% if category == 'danger' %}#dc3545{% elif category == 'success' %}#28a745{% elif category == 'warning' %}#ffc107{% else %}var(--primary-color){% endif %}; background-color: color-mix(in srgb, {% if category == 'danger' %}#dc3545{% elif category == 'success' %}#28a745{% elif category == 'warning' %}#ffc107{% else %}var(--primary-color){% endif %}, transparent 85%); padding: 8px 12px; border-radius: 5px; margin-bottom: 5px;">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <!-- نهاية قسم رسائل Flash -->
+
+        <div class="auth-container">
+            <!-- تعديل نموذج تسجيل الدخول -->
+            <form id="login-form" class="auth-form active" method="POST" action="{{ url_for('auth_standalone') }}">
+                <input type="hidden" name="form_type" value="login">
+                <h2 data-translate="login_header">Login</h2>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope input-icon"></i>
+                    <!-- استخدام name لاستقبال البيانات في Flask -->
+                    <input type="email" id="login-email" name="email" required placeholder=" " aria-label="Email or Username">
+                    <label for="login-email" data-translate="email_username_label">Email or Username</label>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="login-password" name="password" required placeholder=" " aria-label="Password">
+                     <label for="login-password" data-translate="password_label">Password</label>
+                    <i class="fa-solid fa-eye password-toggle-icon" data-target="login-password" aria-label="Show password" role="button" tabindex="0"></i>
+                </div>
+
+                <button type="submit" class="submit-button" data-translate="login_button">Login</button>
+
+                <p class="switch-link">
+                    <span data-translate="no_account_prompt">Don't have an account?</span>
+                    <a href="#" id="switch-to-register" data-translate="register_link">Register</a>
+                </p>
+            </form>
+
+            <!-- تعديل نموذج التسجيل -->
+            <form id="register-form" class="auth-form" method="POST" action="{{ url_for('auth_standalone') }}">
+                <input type="hidden" name="form_type" value="register">
+                <h2 data-translate="register_header">Register</h2>
+
+                <div class="input-group">
+                     <i class="fa-solid fa-user input-icon"></i>
+                     <!-- استخدام name="username" للاسم الكامل -->
+                    <input type="text" id="register-fullname" name="username" required placeholder=" " aria-label="Full Name">
+                     <label for="register-fullname" data-translate="fullname_label">Full Name</label>
+                </div>
+
+                <div class="input-group">
+                     <i class="fa-solid fa-envelope input-icon"></i>
+                    <input type="email" id="register-email" name="email" required placeholder=" " aria-label="Email">
+                     <label for="register-email" data-translate="email_label">Email</label>
+                </div>
+
+                <div class="input-group">
+                     <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="register-password" name="password" required placeholder=" " aria-label="Password">
+                     <label for="register-password" data-translate="password_label">Password</label>
+                    <i class="fa-solid fa-eye password-toggle-icon" data-target="register-password" aria-label="Show password" role="button" tabindex="0"></i>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="register-confirm-password" name="confirm_password" required placeholder=" " aria-label="Confirm Password">
+                    <label for="register-confirm-password" data-translate="confirm_password_label">Confirm Password</label>
+                    <i class="fa-solid fa-eye password-toggle-icon" data-target="register-confirm-password" aria-label="Show password" role="button" tabindex="0"></i>
+                </div>
+
+                <div class="terms-agreement-container">
+                    <!-- استخدام name="terms" -->
+                    <input type="checkbox" id="terms-checkbox" name="terms" required aria-labelledby="terms-label">
+                    <label for="terms-checkbox" id="terms-label">
+                        <span data-translate="agree_text_start">I agree to the</span>
+                        <a href="#" id="terms-link-register" data-translate="terms_link_inline">Terms & Conditions</a>
+                    </label>
+                </div>
+
+                <button type="submit" id="register-submit-button" class="submit-button" data-translate="register_button" disabled>Register</button>
+
+                <p class="switch-link">
+                    <span data-translate="have_account_prompt">Already have an account?</span>
+                    <a href="#" id="switch-to-login" data-translate="login_link">Login</a>
+                </p>
+            </form>
+        </div>
+         <div id="message-area" aria-live="polite"></div>
+    </div>
+
+    <!-- Modal كما هو -->
+    <div id="terms-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+             <button id="modal-close-main" class="modal-close-button" aria-label="Close">×</button>
+             <div class="modal-body">
+                 <h3 data-translate="terms_modal_title">Terms & Conditions</h3>
+                 <h6>1. Acceptance of Terms</h6>
+                 <p>By using the SecureCrypt service, you agree to be bound by these Terms and Conditions.</p>
+                 <h6>2. Privacy & Security</h6>
+                 <p>Your data security is our priority. We use advanced encryption techniques to protect your information.</p>
+                 <h6>3. User Conduct</h6>
+                 <p>You agree not to use the service for any illegal purposes or to transmit any harmful content.</p>
+                 <h6>4. Intellectual Property</h6>
+                 <p>All content and code related to SecureCrypt is protected by intellectual property laws.</p>
+                 <h6>5. Limitation of Liability</h6>
+                 <p>We provide the service "as is" without any warranties, and cannot be held liable for any damages or losses.</p>
+                 <h6>6. Miscellaneous</h6>
+                 <p>By using Encrypto, you hereby agree to sell us your soul for an indefinite period. Additionally, you consent to any future updates to our policies, even if they involve assigning your firstborn as our official mascot.</p>
+            </div>
+             <div class="modal-footer">
+                <button type="button" class="modal-button modal-button-secondary" id="modal-close-secondary" data-translate="modal_close_button">Close</button>
+                <button type="button" class="modal-button modal-button-primary" id="modal-accept-terms" data-translate="modal_accept_button">Accept</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- تحديث مسار JS -->
+    <script src="{{ url_for('static', filename='js/auth_standalone.js') }}"></script>
+</body>
+</html>
